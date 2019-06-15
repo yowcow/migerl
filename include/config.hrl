@@ -5,5 +5,6 @@
     {title,  $t, "title",   {string, "untitled"}, "Migration title"},
     {all,    $a, "all",     {boolean, false},     "Apply/Unapply all"},
     {dryrun, $n, "dry-run", {boolean, false},     "Dry-run"},
+    {silent, $s, "silent",  {boolean, false},     "Silence output"},
     {help,   $h, "help",    {boolean, false},     "Print this help"}
 ]).
