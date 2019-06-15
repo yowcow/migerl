@@ -3,7 +3,7 @@
 -include_lib("eunit/include/eunit.hrl").
 
 setup() ->
-    Config = migerl_config:load("default", "test/valid.config"),
+    Config = migerl_config:load("default", "test/test.config"),
     Conn = migerl_db:start(Config),
     ok = migerl_db:query(Conn, {"DROP TABLE IF EXISTS migrations", []}),
     Conn.

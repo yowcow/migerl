@@ -4,7 +4,6 @@ all:
 	rebar3 escriptize
 
 test:
-	$(MAKE) create-db
 	rebar3 eunit
 
 clean:
@@ -14,7 +13,7 @@ create-db: create-mysql
 
 create-mysql:
 	echo "create database if not exists migerl_test default charset=utf8;" \
-		| mysql -h127.0.0.1 -uroot -pmigerl
+		| mysql -h127.0.0.1 -uroot
 
 docker-run: mysql.cid
 
@@ -23,7 +22,8 @@ mysql.cid:
 	docker run --rm -d \
 		--cidfile $@ \
 		--name migerl-mysql \
-		-e MYSQL_ROOT_PASSWORD=migerl \
+		-e MYSQL_ALLOW_EMPTY_PASSWORD=1 \
+		-e MYSQL_ROOT_PASSWORD="" \
 		-p 3306:3306 \
 		$(IMAGE)
 
