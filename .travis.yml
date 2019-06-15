@@ -1,0 +1,15 @@
+language: erlang
+
+otp_release:
+  - "22.0"
+  - "21.3"
+
+services:
+  - mysql
+
+before_script:
+  - make all
+  - make create-db
+
+script:
+  - make test
