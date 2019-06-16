@@ -30,31 +30,34 @@ read_up(Data) ->
 read_down(Data) ->
     read_queries("Down", string:split(Data, "\n", all)).
 
-read_queries(_, []) -> [];
+read_queries(_, []) -> undefined;
 read_queries(Mark, [Line | Rem]) ->
-    case re:run(Line, "^-- \\+migrate " ++ Mark) of
-        {match, _} ->
-            read_queries(Rem, [], []);
+    case re:run(Line, "^-- \\+migrate " ++ Mark ++ "([\\s\\t]+notransaction)?") of
+        {match, [_]} ->
+            read_queries(tx, Rem, [], []);
+        {match, [_, _]} ->
+            read_queries(notx, Rem, [], []);
         _ ->
             read_queries(Mark, Rem)
     end.
 
-read_queries([], [], Acc) ->
-    lists:reverse(Acc);
-read_queries([], Current, Acc) ->
-    read_queries([], [], [lists:flatten(lists:reverse(Current)) | Acc]);
+read_queries(_, [], [], []) -> undefined;
+read_queries(Tx, [], [], Acc) ->
+    {Tx, lists:reverse(Acc)};
+read_queries(Tx, [], Current, Acc) ->
+    read_queries(Tx, [], [], [lists:flatten(lists:reverse(Current)) | Acc]);
 
-read_queries([[] | Rem], Current, Acc) ->
-    read_queries(Rem, Current, Acc);
-read_queries([Line | Rem], Current, Acc) ->
+read_queries(Tx, [[] | Rem], Current, Acc) ->
+    read_queries(Tx, Rem, Current, Acc);
+read_queries(Tx, [Line | Rem], Current, Acc) ->
     case re:run(Line, "^-- \\+migrate .+") of
         {match, _} ->
-            read_queries([], Current, Acc);
+            read_queries(Tx, [], Current, Acc);
         _ ->
             case re:run(Line, ";$") of
                 {match, _} ->
-                    read_queries(Rem, [], [lists:flatten(lists:reverse([Line | Current])) | Acc]);
+                    read_queries(Tx, Rem, [], [lists:flatten(lists:reverse([Line | Current])) | Acc]);
                 _ ->
-                    read_queries(Rem, [Line ++ "\n" | Current], Acc)
+                    read_queries(Tx, Rem, [Line ++ "\n" | Current], Acc)
             end
     end.

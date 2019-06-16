@@ -39,7 +39,7 @@ read_up_test_() ->
         {
             "no query when empty",
             "",
-            []
+            undefined
         },
         {
             "no query when not defined",
@@ -47,13 +47,13 @@ read_up_test_() ->
             "-- +migrate Up\n"
             "\n\n"
             "-- +migrate Down\n",
-            []
+            undefined
         },
         {
             "no query when no up or down section is defined",
             "hogehoge\n"
             "fugafuga\n",
-            []
+            undefined
         },
         {
             "returns 1 up query",
@@ -63,26 +63,26 @@ read_up_test_() ->
             "hoge2\n"
             "fuga1\n"
             "fuga2\n",
-            ["hoge1\nhoge2\nfuga1\nfuga2\n"]
+            {tx, ["hoge1\nhoge2\nfuga1\nfuga2\n"]}
         },
         {
             "returns multiple up queries",
             "\n"
-            "-- +migrate Up\n"
+            "-- +migrate Up    notransaction\n"
             "hoge1\n"
             "hoge2;\n"
             "\n"
             "fuga1\n"
             "fuga2\n",
-            [
+            {notx, [
                 "hoge1\nhoge2;",
                 "fuga1\nfuga2\n"
-            ]
+            ]}
         },
         {
             "returns 1 up query when down section is defined",
             "\n"
-            "-- +migrate Up\n"
+            "-- +migrate Up notransaction\n"
             "hoge1\n"
             "hoge2\n"
             "fuga1\n"
@@ -93,7 +93,7 @@ read_up_test_() ->
             "bar1\n"
             "foo2\n"
             "bar2\n",
-            ["hoge1\nhoge2\nfuga1\nfuga2\n"]
+            {notx, ["hoge1\nhoge2\nfuga1\nfuga2\n"]}
         },
         {
             "returns 1 up query when down section is defined before up section",
@@ -108,7 +108,7 @@ read_up_test_() ->
             "hoge2\n"
             "fuga1\n"
             "fuga2\n",
-            ["hoge1\nhoge2\nfuga1\nfuga2\n"]
+            {tx, ["hoge1\nhoge2\nfuga1\nfuga2\n"]}
         }
     ],
     F = fun({Name, Input, Expected}) ->
@@ -122,7 +122,7 @@ read_down_test_() ->
         {
             "no query when empty",
             "",
-            []
+            undefined
         },
         {
             "no query when not defined",
@@ -130,13 +130,13 @@ read_down_test_() ->
             "-- +migrate Up\n"
             "\n\n"
             "-- +migrate Down\n",
-            []
+            undefined
         },
         {
             "no query when no up or down section is defined",
             "hogehoge\n"
             "fugafuga\n",
-            []
+            undefined
         },
         {
             "returns 1 down query",
@@ -146,7 +146,7 @@ read_down_test_() ->
             "hoge2\n"
             "fuga1\n"
             "fuga2\n",
-            ["hoge1\nhoge2\nfuga1\nfuga2\n"]
+            {tx, ["hoge1\nhoge2\nfuga1\nfuga2\n"]}
         },
         {
             "returns multiple down queries",
@@ -157,14 +157,14 @@ read_down_test_() ->
             "foo2\n"
             "bar2\n"
             "\n"
-            "-- +migrate Down\n"
+            "-- +migrate Down  notransaction\n"
             "hoge1\n"
             "hoge2;\n"
             "\n"
             "fuga1\n"
             "fuga2\n"
             "\n",
-            ["hoge1\nhoge2;", "fuga1\nfuga2\n"]
+            {notx, ["hoge1\nhoge2;", "fuga1\nfuga2\n"]}
         },
         {
             "returns a down query when up section is defined after down section",
@@ -180,7 +180,7 @@ read_down_test_() ->
             "bar1\n"
             "foo2\n"
             "bar2\n",
-            ["hoge1\nhoge2\nfuga1\nfuga2\n"]
+            {tx, ["hoge1\nhoge2\nfuga1\nfuga2\n"]}
         }
     ],
     F = fun({Name, Input, Expected}) ->
