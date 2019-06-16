@@ -24,17 +24,9 @@ template() ->
     "-- +migrate Down\n\n".
 
 filepath(Dir, Title, Timestamp) ->
-    Prefix = prefix(Timestamp),
+    Prefix = migerl_util:timestamp(Timestamp),
     SafeTitle = sanitize_title(Title, ["/", " ", "?", "!", "~"]),
     lists:flatten(io_lib:format("~s/~s-~s.sql", [Dir, Prefix, SafeTitle])).
-
-prefix(Timestamp) ->
-    Second = posix_second(Timestamp),
-    {{Y, M, D}, {Hour, Min, Sec}} = calendar:system_time_to_universal_time(Second, second),
-    io_lib:format("~4.10.0B~2.10.0B~2.10.0B~2.10.0B~2.10.0B~2.10.0B", [Y, M, D, Hour, Min, Sec]).
-
-posix_second({MegaSec, Sec, _}) ->
-    MegaSec * 1000000 + Sec.
 
 sanitize_title(Title, []) -> Title;
 sanitize_title(Title0, [Pattern | Rem]) ->
