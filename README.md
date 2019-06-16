@@ -10,19 +10,19 @@ How to use
 ----------
 
 ```
-Usage: migerl [-c <config>] [-e [<env>]] [-d [<dir>]] [-t [<title>]]
-              [-a [<all>]] [-n [<dryrun>]] [-s [<silent>]] [-h [<help>]]
-              [command ...]
 
-  -c, --config   Config file
-  -e, --env      Env name in config [default: default]
-  -d, --dir      Migration script directory [default: scripts]
-  -t, --title    Migration title [default: untitled]
-  -a, --all      Apply/Unapply all [default: false]
-  -n, --dry-run  Dry-run [default: false]
-  -s, --silent   Silence output [default: false]
-  -h, --help     Print this help [default: false]
-  command        Commands to execute (e.g. init, new, status, up, down)
+Usage: migerl [-c <config>] [-e [<env>]] [-d [<dir>]] [-t [<title>]]
+              [-a [<all>]] [-s [<silent>]] [-h [<help>]] [command ...]
+
+  -c, --config  Config file
+  -e, --env     Env name in config [default: default]
+  -d, --dir     Migration script directory [default: scripts]
+  -t, --title   Migration title [default: untitled]
+  -a, --all     Apply/Unapply all [default: false]
+  -s, --silent  Silence output [default: false]
+  -h, --help    Print this help [default: false]
+  command       Commands to execute (e.g. init, new, status, up, down)
+
 ```
 
 **Initialize:**
