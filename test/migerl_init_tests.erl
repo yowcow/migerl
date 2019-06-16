@@ -5,7 +5,7 @@
 setup() ->
     Config = migerl_config:load("default", "test/test.config"),
     Conn = migerl_db:start(Config),
-    ok = migerl_db:query(Conn, {"DROP TABLE IF EXISTS migrations", []}),
+    ok = migerl_db:query(Conn, "DROP TABLE IF EXISTS migrations", []),
     Conn.
 
 cleanup(Conn) ->
@@ -16,12 +16,12 @@ dispatch_test_() ->
         [
             fun() ->
                 ok = migerl_init:dispatch(Conn, [{dir, "/tmp/migerl-hoge"}]),
-                {ok, _, [[Count]]} = migerl_db:query(Conn, {"SELECT count(*) FROM migrations", []}),
+                {ok, _, [[Count]]} = migerl_db:query(Conn, "SELECT count(*) FROM migrations", []),
                 ?assertEqual(0, Count)
             end,
             fun() ->
                 ok = migerl_init:dispatch(Conn, [{dir, "/tmp/migerl-hoge"}]),
-                {ok, _, [[Count]]} = migerl_db:query(Conn, {"SELECT count(*) FROM migrations", []}),
+                {ok, _, [[Count]]} = migerl_db:query(Conn, "SELECT count(*) FROM migrations", []),
                 ?assertEqual(0, Count)
             end,
             fun() ->

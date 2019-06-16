@@ -9,16 +9,16 @@ dispatch(Conn, Opts) ->
     create_dir(proplists:get_value(dir, Opts)).
 
 create_table({Dialect, _} = Conn) ->
-    Query = create_query(Dialect),
-    migerl_db:query(Conn, Query).
+    {Query, Args} = create_query(Dialect),
+    migerl_db:query(Conn, Query, Args).
 
 create_query(mysql) ->
-    Stmt = "CREATE TABLE IF NOT EXISTS `migrations` ("
+    Query = "CREATE TABLE IF NOT EXISTS `migrations` ("
            "`id` varchar(254) NOT NULL, "
            "`applied_at` datetime DEFAULT NULL, "
            "PRIMARY KEY (`id`) "
            ") ENGINE=InnoDB DEFAULT CHARSET=utf8",
-    {Stmt, []}.
+    {Query, []}.
 
 create_dir(Dir) ->
     case file:make_dir(Dir) of
