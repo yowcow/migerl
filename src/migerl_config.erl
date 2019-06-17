@@ -11,7 +11,11 @@ load(Opts) ->
     load(Env, File).
 
 load(Env, File) ->
-    {ok, Device} = file:open(File, [read]),
+    read(Env, file:open(File, [read])).
+
+read(Env, {ok, Device}) ->
     {ok, Data} = io:read(Device, ''),
     file:close(Device),
-    proplists:get_value(Env, Data).
+    proplists:get_value(Env, Data);
+read(_, Error) ->
+    migerl_util:log_error("failed opening config", Error).

@@ -34,6 +34,6 @@ dispatch(Conn, Opts, [Comm | Rem]) ->
         "up" ->
             migerl_up:dispatch(Conn, Opts);
         _ ->
-            erlang:error("unknown command: " ++ Comm)
+            migerl_util:log_error("unknown command", Comm)
     end,
     dispatch(Conn, Opts, Rem).

@@ -15,10 +15,12 @@ start(Config) ->
     start(proplists:get_value(dialect, Config), Config).
 
 start(mysql, Config) ->
-    {ok, Pid} = mysql:start_link(Config),
-    {mysql, Pid};
+    case mysql:start_link(Config) of
+        {ok, Pid} -> {mysql, Pid};
+        Error -> migerl_util:log_error("failed connecting to mysql", Error)
+    end;
 start(Dialect, _) ->
-    error("unknown dialect: " ++ atom_to_list(Dialect)).
+    migerl_util:log_error("unknown dialect", Dialect).
 
 stop({mysql, Pid}) ->
     unlink(Pid),
@@ -31,7 +33,7 @@ query({mysql, Pid}, Query, Args) ->
         {ok, _}    -> Ret;
         {ok, _, _} -> Ret;
         Err ->
-            error(io_lib:format("mysql query failed: ~p", [Err]))
+            migerl_util:log_error("mysql query failed", Err)
     end,
     Result.
 

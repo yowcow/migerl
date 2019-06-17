@@ -26,7 +26,7 @@ dispatch_test_() ->
             end,
             fun() ->
                 ?assertError(
-                    "failed creating dir /tmp/migerl-fuga/hoge: enoent",
+                    enoent,
                     migerl_init:dispatch(Conn, [{dir, "/tmp/migerl-fuga/hoge"}])
                 )
             end

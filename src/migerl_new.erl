@@ -15,7 +15,7 @@ create_script(Dir, Title) ->
     File = filepath(Dir, Title, os:timestamp()),
     case file:write_file(File, [template()]) of
         ok -> ok;
-        {error, Reason} -> error("failed creating a script file: " ++ atom_to_list(Reason))
+        {error, Reason} -> migerl_util:log_error("failed creating a script file", Reason)
     end,
     File.
 

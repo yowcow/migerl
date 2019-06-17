@@ -25,5 +25,5 @@ create_dir(Dir) ->
         ok -> ok;
         {error, eexist} -> ok;
         {error, Reason} ->
-            error("failed creating dir " ++ Dir ++ ": " ++ atom_to_list(Reason))
+            migerl_util:log_error("failed creating dir "++ Dir, Reason)
     end.

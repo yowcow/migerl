@@ -1,12 +1,22 @@
 -module(migerl_util).
 
 -export([
+    log_error/2,
+    log_info/3,
     timestamp/1,
     list_dir/1,
     read_file/1,
     read_up/1,
     read_down/1
 ]).
+
+log_error(Msg, Args) ->
+    io:format("~n~ts: ~p~n~n", [Msg, Args]),
+    error(Args).
+
+log_info(_, _, true) -> ok;
+log_info(Msg, Args, false) ->
+    io:format("~ts: ~p~n", [Msg, Args]).
 
 timestamp(Timestamp) ->
     Second = posix_second(Timestamp),
@@ -32,7 +42,7 @@ read_down(Data) ->
 
 read_queries(_, []) -> undefined;
 read_queries(Mark, [Line | Rem]) ->
-    case re:run(Line, "^-- \\+migrate " ++ Mark ++ "([\\s\\t]+notransaction)?") of
+    case re:run(Line, "^-- \\+migrate "++ Mark++"([\\s\\t]+notransaction)?") of
         {match, [_]} ->
             read_queries(tx, Rem, [], []);
         {match, [_, _]} ->
@@ -58,6 +68,6 @@ read_queries(Tx, [Line | Rem], Current, Acc) ->
                 {match, _} ->
                     read_queries(Tx, Rem, [], [lists:flatten(lists:reverse([Line | Current])) | Acc]);
                 _ ->
-                    read_queries(Tx, Rem, [Line ++ "\n" | Current], Acc)
+                    read_queries(Tx, Rem, [Line++"\n" | Current], Acc)
             end
     end.
