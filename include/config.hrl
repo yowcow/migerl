@@ -4,6 +4,5 @@
     {dir,    $d, "dir",     {string, "scripts"},  "Migration script directory"},
     {title,  $t, "title",   {string, "untitled"}, "Migration title"},
     {all,    $a, "all",     {boolean, false},     "Apply/Unapply all"},
-    {silent, $s, "silent",  {boolean, false},     "Silence output"},
     {help,   $h, "help",    {boolean, false},     "Print this help"}
 ]).

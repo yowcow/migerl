@@ -33,6 +33,8 @@ dispatch(Conn, Opts, [Comm | Rem]) ->
             migerl_new:dispatch(Conn, Opts);
         "up" ->
             migerl_up:dispatch(Conn, Opts);
+        "down" ->
+            migerl_down:dispatch(Conn, Opts);
         _ ->
             migerl_util:log_error("unknown command", Comm)
     end,
