@@ -50,29 +50,29 @@ tx_queries({mysql, Pid} = Conn, Queries) ->
             throw(Err)
     end.
 
-is_applied(Conn, File) ->
+is_applied(Conn, Name) ->
     {ok, _, [[Count]]} = query(
         Conn,
         "SELECT count(*) FROM migrations "
         "WHERE id = ? AND applied_at IS NOT NULL",
-        [File]
+        [Name]
     ),
     case Count of
         0 -> false;
         _ -> true
     end.
 
-apply_query({mysql, _}, File) ->
+apply_query({mysql, _}, Name) ->
     {
         "INSERT INTO migrations "
         "SET id = ?, applied_at = NOW() "
         "ON DUPLICATE KEY UPDATE applied_at = NOW() ",
-        [File]
+        [Name]
     }.
 
-unapply_query(_, File) ->
+unapply_query(_, Name) ->
     {
         "DELETE FROM migrations "
         "WHERE id = ?",
-        [File]
+        [Name]
     }.
