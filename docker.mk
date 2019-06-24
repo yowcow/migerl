@@ -1,8 +1,4 @@
-all: create-mysql
-
-create-mysql:
-	echo "create database if not exists migerl_test default charset=utf8;" \
-		| mysql -h127.0.0.1 -uroot
+all:
 
 start: mysql.cid
 
@@ -20,4 +16,4 @@ stop:
 	[ -f mysql.cid ] && docker stop $$(cat mysql.cid) || true
 	rm -f mysql.cid
 
-.PHONY: all create-mysql start stop
+.PHONY: all start stop
