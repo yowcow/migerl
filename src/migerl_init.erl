@@ -10,7 +10,8 @@ dispatch(Conn, Opts) ->
 
 create_table({Dialect, _} = Conn) ->
     {Query, Args} = create_query(Dialect),
-    migerl_db:query(Conn, Query, Args).
+    migerl_db:query(Conn, Query, Args),
+    migerl_util:log_info("done creating table for migration!").
 
 create_query(mysql) ->
     Query = "CREATE TABLE IF NOT EXISTS `migrations` ("
@@ -26,4 +27,5 @@ create_dir(Dir) ->
         {error, eexist} -> ok;
         {error, Reason} ->
             migerl_util:log_error("failed creating dir "++ Dir, Reason)
-    end.
+    end,
+    migerl_util:log_info("done creating directory for migration files!").

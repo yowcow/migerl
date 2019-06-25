@@ -17,6 +17,7 @@ create_script(Dir, Title) ->
         ok -> ok;
         {error, Reason} -> migerl_util:log_error("failed creating a script file", Reason)
     end,
+    migerl_util:log_info("done creating a migration file!: "++File),
     File.
 
 template() ->

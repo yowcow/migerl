@@ -6,3 +6,5 @@
     {all,    $a, "all",     {boolean, false},     "Apply/Unapply all"},
     {help,   $h, "help",    {boolean, false},     "Print this help"}
 ]).
+
+-define(UTF8_CHECK, [226, 156, 147]).

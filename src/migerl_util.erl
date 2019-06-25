@@ -16,7 +16,7 @@ log_error(Msg, Args) ->
     error(Args).
 
 log_info(Msg) ->
-    io:format("~ts~n", [Msg]).
+    io:format("-> ~ts~n", [Msg]).
 
 log_info(Msg, Args) ->
     io:format("~ts: ~p~n", [Msg, Args]).
@@ -30,8 +30,12 @@ posix_second({MegaSec, Sec, _}) ->
     MegaSec * 1000000 + Sec.
 
 list_dir(Dir) ->
-    {ok, Files} = file:list_dir(Dir),
-    [{File, Dir++"/"++File} || File <- lists:sort(Files)].
+    case file:list_dir(Dir) of
+        {ok, Files} ->
+            [{File, Dir++"/"++File} || File <- lists:sort(Files)];
+        Err ->
+            log_error("failed opening directory '"++Dir++"'", Err)
+    end.
 
 read_file(Filepath) ->
     {ok, Bin} = file:read_file(Filepath),
@@ -59,7 +63,6 @@ read_queries(Tx, [], [], Acc) ->
     {Tx, lists:reverse(Acc)};
 read_queries(Tx, [], Current, Acc) ->
     read_queries(Tx, [], [], [lists:flatten(lists:reverse(Current)) | Acc]);
-
 read_queries(Tx, [[] | Rem], Current, Acc) ->
     read_queries(Tx, Rem, Current, Acc);
 read_queries(Tx, [Line | Rem], Current, Acc) ->

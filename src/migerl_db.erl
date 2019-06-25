@@ -6,6 +6,7 @@
     query/3,
     queries/2,
     tx_queries/2,
+    get_applied_at/2,
     is_applied/2,
     apply_query/2,
     unapply_query/2
@@ -50,15 +51,24 @@ tx_queries({mysql, Pid} = Conn, Queries) ->
             throw(Err)
     end.
 
-is_applied(Conn, Name) ->
-    {ok, _, [[Count]]} = query(
+get_applied_at(Conn, Name) ->
+    {ok, _, Result} = query(
         Conn,
-        "SELECT count(*) FROM migrations "
+        "SELECT applied_at FROM migrations "
         "WHERE id = ? AND applied_at IS NOT NULL",
         [Name]
     ),
-    case Count of
-        0 -> false;
+    case Result of
+        [[Timestamp]] ->
+            Timestamp;
+        _ -> % []
+            undefined
+    end.
+
+
+is_applied(Conn, Name) ->
+    case get_applied_at(Conn, Name) of
+        undefined -> false;
         _ -> true
     end.
 
