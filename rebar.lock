@@ -1,0 +1,8 @@
+[{<<"getopt">>,
+  {git,"git://github.com/jcomellas/getopt",
+       {ref,"784b0ea8777f754fc96099b385d00d9cf5b137d8"}},
+  0},
+ {<<"mysql">>,
+  {git,"git://github.com/mysql-otp/mysql-otp",
+       {ref,"9a98eff7a127a5012c45e4b8bd845b0befccf0a9"}},
+  0}].
