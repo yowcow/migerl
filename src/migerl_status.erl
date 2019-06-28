@@ -10,6 +10,7 @@ dispatch(Conn, Opts) ->
     Dir = proplists:get_value(dir, Opts),
     Files = migerl_util:list_dir(Dir),
     Results = migerl_db:get_status(Conn, Files),
+    migerl_util:log_info("--- current status ---"),
     show_status(Results).
 
 show_status([]) -> ok;
