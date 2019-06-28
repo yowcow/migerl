@@ -8,3 +8,5 @@
 ]).
 
 -define(UTF8_CHECK, [226, 156, 147]).
+-define(UTF8_CROSS, [226, 156, 152]).
+-define(UTF8_CIRCL, "_").

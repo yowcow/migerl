@@ -5,6 +5,7 @@
     log_info/1,
     log_info/2,
     timestamp/1,
+    datetime/1,
     list_dir/1,
     read_file/1,
     read_up/1,
@@ -28,6 +29,9 @@ timestamp(Timestamp) ->
 
 posix_second({MegaSec, Sec, _}) ->
     MegaSec * 1000000 + Sec.
+
+datetime({{Y, Mo, D}, {H, M, S}}) ->
+    io_lib:format("~4.10.0B-~2.10.0B-~2.10.0B ~2.10.0B:~2.10.0B:~2.10.0B", [Y, Mo, D, H, M, S]).
 
 list_dir(Dir) ->
     case file:list_dir(Dir) of
