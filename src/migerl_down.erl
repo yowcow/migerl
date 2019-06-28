@@ -7,28 +7,24 @@
 dispatch(Conn, Opts) ->
     Dir = proplists:get_value(dir, Opts),
     Files = migerl_util:list_dir(Dir),
+    Migrations = migerl_db:get_status(Conn, Files),
     All = proplists:get_value(all, Opts),
-    unapply_migrations(Conn, lists:reverse(Files), All).
+    unapply_migrations(Conn, lists:reverse(Migrations), All),
+    migerl_status:dispatch(Conn, Opts).
 
 unapply_migrations(_, [], _) ->
     migerl_util:log_info("no more migrations to unapply!"),
     ok;
-unapply_migrations(Conn, [{Name, Path} | Rem], false) ->
-    case migerl_db:is_applied(Conn, Name) of
-        true ->
-            Content = migerl_util:read_file(Path),
-            unapply_one(Conn, Name, migerl_util:read_down(Content));
-        _ ->
-            unapply_migrations(Conn, Rem, false)
-    end;
-unapply_migrations(Conn, [{Name, Path} | Rem], true) ->
-    case migerl_db:is_applied(Conn, Name) of
-        true ->
-            Content = migerl_util:read_file(Path),
-            unapply_one(Conn, Name, migerl_util:read_down(Content)),
-            unapply_migrations(Conn, Rem, true);
-        _ ->
-            unapply_migrations(Conn, Rem, true)
+unapply_migrations(Conn, [{_, _, wont_be_applied} | Rem], All) ->
+    unapply_migrations(Conn, Rem, All);
+unapply_migrations(Conn, [{_, _, will_be_applied} | Rem], All) ->
+    unapply_migrations(Conn, Rem, All);
+unapply_migrations(Conn, [{Name, Path, _} | Rem], All) ->
+    Content = migerl_util:read_file(Path),
+    unapply_one(Conn, Name, migerl_util:read_down(Content)),
+    case All of
+        true -> unapply_migrations(Conn, Rem, All);
+        _ -> ok
     end.
 
 unapply_one(Conn, Name, undefined) ->

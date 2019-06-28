@@ -7,29 +7,23 @@
 dispatch(Conn, Opts) ->
     Dir = proplists:get_value(dir, Opts),
     Files = migerl_util:list_dir(Dir),
+    Migrations = migerl_db:get_status(Conn, Files),
     All = proplists:get_value(all, Opts),
-    apply_migrations(Conn, Files, All).
+    apply_migrations(Conn, Migrations, All),
+    migerl_status:dispatch(Conn, Opts).
 
 apply_migrations(_, [], _) ->
     migerl_util:log_info("no more migrations to apply!"),
     ok;
-apply_migrations(Conn, [{Name, Path} | Rem], false) ->
-    case migerl_db:is_applied(Conn, Name) of
-        false ->
-            Content = migerl_util:read_file(Path),
-            apply_one(Conn, Name, migerl_util:read_up(Content));
-        _ ->
-            apply_migrations(Conn, Rem, false)
+apply_migrations(Conn, [{Name, Path, will_be_applied} | Rem], All) ->
+    Content = migerl_util:read_file(Path),
+    apply_one(Conn, Name, migerl_util:read_up(Content)),
+    case All of
+        true -> apply_migrations(Conn, Rem, true);
+        _ -> ok
     end;
-apply_migrations(Conn, [{Name, Path} | Rem], true) ->
-    case migerl_db:is_applied(Conn, Name) of
-        false ->
-            Content = migerl_util:read_file(Path),
-            apply_one(Conn, Name, migerl_util:read_up(Content)),
-            apply_migrations(Conn, Rem, true);
-        _ ->
-            apply_migrations(Conn, Rem, true)
-    end.
+apply_migrations(Conn, [{_, _, _} | Rem], All) ->
+    apply_migrations(Conn, Rem, All).
 
 apply_one(_, Name, undefined) ->
     migerl_util:log_error("failed applying "++Name, "no up query to apply");
