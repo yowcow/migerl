@@ -8,6 +8,7 @@
     tx_queries/2,
     get_applied_at/2,
     is_applied/2,
+    get_status/2,
     apply_query/2,
     unapply_query/2
 ]).
@@ -65,11 +66,27 @@ get_applied_at(Conn, Name) ->
             undefined
     end.
 
-
 is_applied(Conn, Name) ->
     case get_applied_at(Conn, Name) of
         undefined -> false;
         _ -> true
+    end.
+
+get_status(Conn, Files) ->
+    get_status(Conn, lists:reverse(Files), true, []).
+
+get_status(_, [], _, Acc) -> Acc;
+get_status(Conn, [{Name, Path} | Rem], ToBeApplied, Acc) ->
+    case get_applied_at(Conn, Name) of
+        undefined ->
+            case ToBeApplied of
+                true ->
+                    get_status(Conn, Rem, true, [{Name, Path, will_be_applied} | Acc]);
+                false ->
+                    get_status(Conn, Rem, false, [{Name, Path, wont_be_applied} | Acc])
+            end;
+        Timestamp ->
+            get_status(Conn, Rem, false, [{Name, Path, Timestamp} | Acc])
     end.
 
 apply_query({mysql, _}, Name) ->

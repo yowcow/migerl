@@ -85,3 +85,36 @@ apply_unapply_test_() ->
             end
         ]
     end}.
+
+get_status_test_() ->
+    {setup, fun setup/0, fun cleanup/1, fun(Conn) ->
+        [
+            {
+                "all unapplied",
+                fun() ->
+                    Files = migerl_util:list_dir("test/files"),
+                    Actual = migerl_db:get_status(Conn, Files),
+                    Expected = [
+                        {"file1.sql", "test/files/file1.sql", will_be_applied},
+                        {"file2.sql", "test/files/file2.sql", will_be_applied},
+                        {"file3.sql", "test/files/file3.sql", will_be_applied}
+                    ],
+                    ?assertEqual(Expected, Actual)
+                end
+            },
+            {
+                "applied migration in the middle",
+                fun() ->
+                    {Query, Args} = migerl_db:apply_query(Conn, "file2.sql"),
+                    ok = migerl_db:query(Conn, Query, Args),
+                    Files = migerl_util:list_dir("test/files"),
+                    Actual = migerl_db:get_status(Conn, Files),
+                    ?assertMatch([
+                        {"file1.sql", "test/files/file1.sql", wont_be_applied},
+                        {"file2.sql", "test/files/file2.sql", {_, _}},
+                        {"file3.sql", "test/files/file3.sql", will_be_applied}
+                    ], Actual)
+                end
+            }
+        ]
+    end}.
