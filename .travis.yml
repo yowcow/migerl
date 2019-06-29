@@ -1,15 +1,20 @@
 language: erlang
-
 otp_release:
-  - "22.0"
-  - "21.3"
-
+- '22.0'
+- '21.3'
 services:
-  - mysql
-
+- mysql
 before_script:
-  - make all
-  - make create-db
-
+- make create-db
 script:
-  - make test
+- make all
+- make test
+deploy:
+  provider: releases
+  api_key:
+    secure: I0tGgULZ2XmmqLx5ag80MOsxkkI52yhAG2bOkRG3N9auX4zqPY9ruCmCDGKMteTIkBtSPPxafvI5H50VV1Ymos9+et3ChYA1LVFxs6LKbmFXT370r5TUcyPclkDDlkUENTYL2oYbDQRXvnr8uX6GGULSF4gTYURQaNrC0qryL4hC0mx7Woj83b2BxDb9ImRsop1HljD73XSt2cgjVH7/wGjV9fNP6ZSc9PtWoTlql0CfJZ+wz/3C3KUpeh/kAFMbrB2nJdVDTMpwYvPHARcfsFJmj8GWL+tp9MdokQc251wuSwPsZQkE3rNXz5Nt3AQL4dksODfk+64+aDim+G5fEClSCycgUg+cklW/whrbY6fmPvyHbwRZeu4cCYAg+p0AoThbopKJI5ZGKyENivA4N9CadR51IZWqXSyWmHuFhhmkZFWO4du1HzfpfCV/9ruAXNX6stbW37J/4Gx90S0BEVTqoLaRSaC1m2kqNZ/zTCBhtcg9ZvHNJY2YOW9+hF8TiT59++Qax8+lxM4RxzMlQtjb4Cv3QtRRuvZ0siXEAdTOk4gbR7p0wHslNFjT0feaHQcz0OqnDkMOYxAdDfHc0UHI3mqonLaPnCm+SsNBH/cZkGW5wG+l7uNNIjpr1iy7gKzGi8ad5K5/fRLGGpCoa9JwQqdc/Yaz/lMAcPtgpxI=
+  file: _build/default/bin/migerl
+  skip_cleanup: true
+  on:
+    tags: true
+    repo: yowcow/migerl
