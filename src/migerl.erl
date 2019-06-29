@@ -6,16 +6,22 @@
 
 -include("config.hrl").
 
+-define(VERSION, [0, 0, 3]).
+
 %% escript Entry point
 main(Args) ->
     {ok, {Opts, Commands}} = getopt:parse(?OPT_SPEC, Args),
-    case proplists:get_value(help, Opts) of
-        true ->
+    Help = proplists:get_value(help, Opts),
+    Ver = proplists:get_value(version, Opts),
+    if
+        Help ->
             getopt:usage(
                 ?OPT_SPEC, "migerl", "[command ...]",
                 [{"command", "Commands to execute (e.g. init, new, status, up, down)"}]
             );
-        _ ->
+        Ver ->
+            io:format("migerl ~.10B.~.10B.~.10B~n", ?VERSION);
+        true ->
             Config = migerl_config:load(Opts),
             Conn = migerl_db:start(Config),
             dispatch(Conn, Opts, Commands)
