@@ -12,15 +12,16 @@ How to use
 ```
 
 Usage: migerl [-c <config>] [-e [<env>]] [-d [<dir>]] [-t [<title>]]
-              [-a [<all>]] [-h [<help>]] [command ...]
+              [-a [<all>]] [-v [<version>]] [-h [<help>]] [command ...]
 
-  -c, --config  Config file
-  -e, --env     Env name in config [default: default]
-  -d, --dir     Migration script directory [default: scripts]
-  -t, --title   Migration title [default: untitled]
-  -a, --all     Apply/Unapply all [default: false]
-  -h, --help    Print this help [default: false]
-  command       Commands to execute (e.g. init, new, status, up, down)
+  -c, --config   Config file
+  -e, --env      Env name in config [default: default]
+  -d, --dir      Migration script directory [default: scripts]
+  -t, --title    Migration title [default: untitled]
+  -a, --all      Apply/Unapply all [default: false]
+  -v, --version  Print version [default: false]
+  -h, --help     Print this help [default: false]
+  command        Commands to execute (e.g. init, new, status, up, down)
 
 ```
 
