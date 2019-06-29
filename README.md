@@ -6,6 +6,13 @@ migerl
 Yet another database migration tool written in Erlang.
 
 
+How to install
+--------------
+
+1. With Erlang/OTP runtime, download release binary from [releases](https://github.com/yowcow/migerl/releases).
+2. Without Erlang/OTP runtime, pull docker image with `docker pull yowcow/migerl`.
+
+
 How to use
 ----------
 
