@@ -55,29 +55,23 @@ read_queries(_, []) -> undefined;
 read_queries(Mark, [Line | Rem]) ->
     case re:run(Line, "^-- \\+migrate "++ Mark++"([\\s\\t]+notransaction)?") of
         {match, [_]} ->
-            read_queries(tx, Rem, [], []);
+            read_queries(tx, Rem, []);
         {match, [_, _]} ->
-            read_queries(notx, Rem, [], []);
+            read_queries(notx, Rem, []);
         _ ->
             read_queries(Mark, Rem)
     end.
 
-read_queries(_, [], [], []) -> undefined;
-read_queries(Tx, [], [], Acc) ->
-    {Tx, lists:reverse(Acc)};
-read_queries(Tx, [], Current, Acc) ->
-    read_queries(Tx, [], [], [lists:flatten(lists:reverse(Current)) | Acc]);
-read_queries(Tx, [[] | Rem], Current, Acc) ->
-    read_queries(Tx, Rem, Current, Acc);
-read_queries(Tx, [Line | Rem], Current, Acc) ->
+read_queries(_, [], []) -> undefined;
+read_queries(Tx, [], Acc) ->
+    SQL = lists:flatten(lists:reverse(Acc)),
+    {Tx, migerl_sql:parse(SQL)};
+read_queries(Tx, [[] | L], Acc) ->
+    read_queries(Tx, L, Acc);
+read_queries(Tx, [Line | L], Acc) ->
     case re:run(Line, "^-- \\+migrate .+") of
         {match, _} ->
-            read_queries(Tx, [], Current, Acc);
+            read_queries(Tx, [], Acc);
         _ ->
-            case re:run(Line, ";$") of
-                {match, _} ->
-                    read_queries(Tx, Rem, [], [lists:flatten(lists:reverse([Line | Current])) | Acc]);
-                _ ->
-                    read_queries(Tx, Rem, [Line++"\n" | Current], Acc)
-            end
+            read_queries(Tx, L, [Line++"\n" | Acc])
     end.
