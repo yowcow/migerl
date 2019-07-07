@@ -18,19 +18,24 @@ parse_test_() ->
             "Multiple simple statement",
             "SELECT     1 	   	 ;	;  "
             "select 2 	, \";\"	   ",
-            ["SELECT 1", "select 2 , \";\""]
+            ["SELECT 1", "select 2, \";\""]
         },
         {
             "'--' style comments are removed",
             "select 1, -- this is one 	 \n "
             "  	2      -- this is two 	 \r\n "
             ";  	-- select 3 -- this is three	 \n ",
-            ["select 1 , 2"]
+            ["select 1, 2"]
         },
         {
-            "backquotes are removed",
+            "with backquotes",
             "select `val_1`, \n `val_2`;",
-            ["select val_1 , val_2"]
+            ["select val_1, val_2"]
+        },
+        {
+            "with parenthesis",
+            "select unix_timestamp(now()) ; ",
+            ["select unix_timestamp( now())"]
         }
     ],
     F = fun({Name, Input, Expected}) ->

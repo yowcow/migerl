@@ -28,9 +28,18 @@ build_queries([_ | T], true, Cur, Acc) ->
 % strip white_space
 build_queries([{white_space, _, _} | T], false, Cur, Acc) ->
     build_queries(T, false, Cur, Acc);
-% strip backquote
+% skip backquote
 build_queries([{'`', _} | T], false, Cur, Acc) ->
     build_queries(T, false, Cur, Acc);
+% append ,
+build_queries([{',', _} | T], false, [Prev | Cur], Acc) ->
+    build_queries(T, false, [Prev++"," | Cur], Acc);
+% append (
+build_queries([{'(', _} | T], false, [Prev | Cur], Acc) ->
+    build_queries(T, false, [Prev++"(" | Cur], Acc);
+% append )
+build_queries([{')', _} | T], false, [Prev | Cur], Acc) ->
+    build_queries(T, false, [Prev++")" | Cur], Acc);
 % end of a query
 build_queries([{';', _} | T], false, Cur, Acc) ->
     case Cur of
@@ -40,10 +49,13 @@ build_queries([{';', _} | T], false, Cur, Acc) ->
             build_queries(T, false, [], [build_query(Cur) | Acc])
     end;
 % otherwise append to current query
-build_queries([{_, Prop} | T], false, Cur, Acc) ->
-    build_queries(T, false, [proplists:get_value(text, Prop) | Cur], Acc);
-build_queries([{_, Prop, _} | T], false, Cur, Acc) ->
-    build_queries(T, false, [proplists:get_value(text, Prop) | Cur], Acc).
+build_queries([{_, Props} | T], false, Cur, Acc) ->
+    build_current(Props, T, Cur, Acc);
+build_queries([{_, Props, _} | T], false, Cur, Acc) ->
+    build_current(Props, T, Cur, Acc).
+
+build_current(Props, T, Cur, Acc) ->
+    build_queries(T, false, [proplists:get_value(text, Props) | Cur], Acc).
 
 build_query(Words) ->
     string:join(lists:reverse(Words), " ").
