@@ -22,11 +22,14 @@ build_queries([{'--', _} | T], false, Cur, Acc) ->
 % '--' comment ends
 build_queries([{white_space, _, [$\n | _]} | T], true, Cur, Acc) ->
     build_queries(T, false, Cur, Acc);
-% skip everything while in comment
+% strip everything while in comment
 build_queries([_ | T], true, Cur, Acc) ->
     build_queries(T, true, Cur, Acc);
-% ignore whitespaces
+% strip white_space
 build_queries([{white_space, _, _} | T], false, Cur, Acc) ->
+    build_queries(T, false, Cur, Acc);
+% strip backquote
+build_queries([{'`', _} | T], false, Cur, Acc) ->
     build_queries(T, false, Cur, Acc);
 % end of a query
 build_queries([{';', _} | T], false, Cur, Acc) ->

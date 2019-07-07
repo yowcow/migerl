@@ -26,6 +26,11 @@ parse_test_() ->
             "  	2      -- this is two 	 \r\n "
             ";  	-- select 3 -- this is three	 \n ",
             ["select 1 , 2"]
+        },
+        {
+            "backquotes are removed",
+            "select `val_1`, \n `val_2`;",
+            ["select val_1 , val_2"]
         }
     ],
     F = fun({Name, Input, Expected}) ->
