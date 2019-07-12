@@ -30,7 +30,7 @@ parse_test_() ->
         {
             "with backquotes",
             "select `val_1`, \n `val_2`;",
-            ["select val_1, val_2"]
+            ["select `val_1`, `val_2`"]
         },
         {
             "with parenthesis",
@@ -39,7 +39,9 @@ parse_test_() ->
         }
     ],
     F = fun({Name, Input, Expected}) ->
-        Actual = migerl_sql:parse(Input),
-        {Name, ?_assertEqual(Expected, Actual)}
+        {Name, fun() ->
+            Actual = migerl_sql:parse(Input),
+            ?assertEqual(Expected, Actual)
+        end}
     end,
     lists:map(F, Cases).
