@@ -15,14 +15,14 @@ dispatch(Conn, Opts) ->
 
 show_status([]) -> ok;
 show_status([{Name, _, wont_be_applied} | Rem]) ->
-    Msg = io_lib:format("[~ts]   ... skipped ...   <- `~ts`", [?UTF8_CROSS, Name]),
+    Msg = io_lib:format("[~ts]   ... skipped ...   <- `~ts`", [color:redb(?UTF8_CROSS), Name]),
     migerl_util:log_info(Msg),
     show_status(Rem);
 show_status([{Name, _, will_be_applied} | Rem]) ->
-    Msg = io_lib:format("[~ts]   ... pending ...   <- `~ts`", [?UTF8_CIRCL, Name]),
+    Msg = io_lib:format("[~ts]   ... pending ...   <- `~ts`", [color:blueb(?UTF8_CIRCL), Name]),
     migerl_util:log_info(Msg),
     show_status(Rem);
 show_status([{Name, _, Timestamp} | Rem]) ->
-    Msg = io_lib:format("[~ts] ~ts <- `~ts`", [?UTF8_CHECK, migerl_util:datetime(Timestamp), Name]),
+    Msg = io_lib:format("[~ts] ~ts <- `~ts`", [color:greenb(?UTF8_CHECK), migerl_util:datetime(Timestamp), Name]),
     migerl_util:log_info(Msg),
     show_status(Rem).
