@@ -6,6 +6,13 @@ migerl
 Yet another database migration tool written in Erlang.
 
 
+What it does
+------------
+
+* Manages applied/unapplied migrations
+* Runs a migration with multiple queries under a transaction whenever possible
+
+
 How to install
 --------------
 
