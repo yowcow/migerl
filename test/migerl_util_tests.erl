@@ -63,7 +63,7 @@ read_up_test_() ->
             "hoge2\n"
             "fuga1\n"
             "fuga2\n",
-            {tx, ["hoge1 hoge2 fuga1 fuga2"]}
+            {notx, ["hoge1 hoge2 fuga1 fuga2"]}
         },
         {
             "returns multiple up queries",
@@ -108,7 +108,21 @@ read_up_test_() ->
             "hoge2\n"
             "fuga1\n"
             "fuga2\n",
-            {tx, ["hoge1 hoge2 fuga1 fuga2"]}
+            {notx, ["hoge1 hoge2 fuga1 fuga2"]}
+        },
+        {
+            "returns transactionable queries",
+            "-- +migrate Up notransaction\n"
+            "insert into hoge;"
+            "update hoge set hoge=\"hoge\";"
+            "delete hoge;"
+            "select * from hoge;\n\n",
+            {tx, [
+                "insert into hoge",
+                "update hoge set hoge = \"hoge\"",
+                "delete hoge",
+                "select * from hoge"
+            ]}
         }
     ],
     F = fun({Name, Input, Expected}) ->
@@ -146,7 +160,7 @@ read_down_test_() ->
             "hoge2\n"
             "fuga1\n"
             "fuga2\n",
-            {tx, ["hoge1 hoge2 fuga1 fuga2"]}
+            {notx, ["hoge1 hoge2 fuga1 fuga2"]}
         },
         {
             "returns multiple down queries",
@@ -180,7 +194,21 @@ read_down_test_() ->
             "bar1\n"
             "foo2\n"
             "bar2\n",
-            {tx, ["hoge1 hoge2 fuga1 fuga2"]}
+            {notx, ["hoge1 hoge2 fuga1 fuga2"]}
+        },
+        {
+            "returns transactionable queries",
+            "-- +migrate Down notransaction\n"
+            "insert into hoge;"
+            "update hoge set hoge=\"hoge\";"
+            "delete hoge;"
+            "select * from hoge;\n\n",
+            {tx, [
+                "insert into hoge",
+                "update hoge set hoge = \"hoge\"",
+                "delete hoge",
+                "select * from hoge"
+            ]}
         }
     ],
     F = fun({Name, Input, Expected}) ->
