@@ -4,6 +4,7 @@
     log_error/2,
     log_info/1,
     log_info/2,
+    log_queries/1,
     timestamp/1,
     datetime/1,
     list_dir/1,
@@ -17,10 +18,15 @@ log_error(Msg, Args) ->
     error(Args).
 
 log_info(Msg) ->
-    io:format("-> ~ts~n", [Msg]).
+    io:format("~ts~n", [Msg]).
 
 log_info(Msg, Args) ->
     io:format("~ts: ~p~n", [Msg, Args]).
+
+log_queries([]) -> ok;
+log_queries([Q | Queries]) ->
+    log_info(Q),
+    log_queries(Queries).
 
 timestamp(Timestamp) ->
     Second = posix_second(Timestamp),
@@ -46,32 +52,52 @@ read_file(Filepath) ->
     binary_to_list(Bin).
 
 read_up(Data) ->
-    read_queries("Up", string:split(Data, "\n", all)).
+    find_queries("Up", string:split(Data, "\n", all)).
 
 read_down(Data) ->
-    read_queries("Down", string:split(Data, "\n", all)).
+    find_queries("Down", string:split(Data, "\n", all)).
 
-read_queries(_, []) -> undefined;
-read_queries(Mark, [Line | Rem]) ->
-    case re:run(Line, "^-- \\+migrate "++ Mark++"([\\s\\t]+notransaction)?") of
-        {match, [_]} ->
-            read_queries(tx, Rem, []);
-        {match, [_, _]} ->
-            read_queries(notx, Rem, []);
-        _ ->
-            read_queries(Mark, Rem)
-    end.
-
-read_queries(_, [], []) -> undefined;
-read_queries(Tx, [], Acc) ->
-    SQL = lists:flatten(lists:reverse(Acc)),
-    {Tx, migerl_sql:parse(SQL)};
-read_queries(Tx, [[] | L], Acc) ->
-    read_queries(Tx, L, Acc);
-read_queries(Tx, [Line | L], Acc) ->
-    case re:run(Line, "^-- \\+migrate .+") of
+find_queries(_, []) -> undefined;
+find_queries(Mark, [Line | Rem]) ->
+    case re:run(Line, "^-- \\+migrate "++ Mark) of
         {match, _} ->
-            read_queries(Tx, [], Acc);
+            read_queries(Rem, []);
         _ ->
-            read_queries(Tx, L, [Line++"\n" | Acc])
+            find_queries(Mark, Rem)
     end.
+
+read_queries([], []) -> undefined;
+read_queries([], Acc) ->
+    SQL = lists:flatten(lists:reverse(Acc)),
+    parse_queries(migerl_sql:parse(SQL));
+read_queries([[] | L], Acc) ->
+    read_queries(L, Acc);
+read_queries([Row | L], Acc) ->
+    case re:run(Row, "^-- \\+migrate .+") of
+        {match, _} ->
+            read_queries([], Acc);
+        _ ->
+            read_queries(L, [Row++" " | Acc])
+    end.
+
+-define(TX_STATEMENTS, ["INSERT", "UPDATE", "DELETE", "SELECT"]).
+
+parse_queries(Queries) ->
+    parse_queries(Queries, Queries, true).
+
+parse_queries([], Queries, true) ->
+    {tx, Queries};
+parse_queries([], Queries, false) ->
+    {notx, Queries};
+parse_queries([Q | L], Queries, Tx) ->
+    Stmt = extract_statement(Q),
+    case lists:member(Stmt, ?TX_STATEMENTS) of
+        true ->
+            parse_queries(L, Queries, Tx and true);
+        _ ->
+            parse_queries(L, Queries, Tx and false)
+    end.
+
+extract_statement(Q) ->
+    [Stmt | _] = string:split(Q, " "),
+    string:uppercase(Stmt).
