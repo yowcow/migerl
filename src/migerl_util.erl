@@ -4,6 +4,7 @@
     log_error/2,
     log_info/1,
     log_info/2,
+    log_queries/1,
     timestamp/1,
     datetime/1,
     list_dir/1,
@@ -17,10 +18,15 @@ log_error(Msg, Args) ->
     error(Args).
 
 log_info(Msg) ->
-    io:format("-> ~ts~n", [Msg]).
+    io:format("~ts~n", [Msg]).
 
 log_info(Msg, Args) ->
     io:format("~ts: ~p~n", [Msg, Args]).
+
+log_queries([]) -> ok;
+log_queries([Q | Queries]) ->
+    log_info(Q),
+    log_queries(Queries).
 
 timestamp(Timestamp) ->
     Second = posix_second(Timestamp),
