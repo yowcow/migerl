@@ -24,7 +24,8 @@ parse_test_() ->
             "'--' style comments are removed",
             "select 1, -- this is one 	 \n "
             "  	2      -- this is two 	 \r\n "
-            ";  	-- select 3 -- this is three	 \n ",
+            ";  	-- select 3 -- this is three	 \n "
+            ";  	--select 4 -- this is four\n ",
             ["select 1, 2"]
         },
         {
@@ -33,9 +34,32 @@ parse_test_() ->
             ["select `val_1`, `val_2`"]
         },
         {
-            "with parenthesis",
+            "with nested parenthesis",
             "select unix_timestamp(now()) ; ",
-            ["select unix_timestamp( now())"]
+            [
+                "select unix_timestamp(now())"
+            ]
+        },
+        {
+            "type declaration",
+            "int(10) unsigned ; ",
+            [
+                "int(10) unsigned"
+            ]
+        },
+        {
+            "where clause with `in`",
+            "where name in ((hoge),(fuga),(foo))  ;  ",
+            [
+                "where name in((hoge), (fuga), (foo))"
+            ]
+        },
+        {
+            "key definitions",
+            "PRIMARY KEY (`id`), UNIQUE KEY `foo_uniq` (`foo`)) ENGINE = InnoDB",
+            [
+                "PRIMARY KEY(`id`), UNIQUE KEY `foo_uniq`(`foo`)) ENGINE = InnoDB"
+            ]
         }
     ],
     F = fun({Name, Input, Expected}) ->
