@@ -25,7 +25,7 @@ log_info(Msg, Args) ->
 
 log_queries([]) -> ok;
 log_queries([Q | Queries]) ->
-    log_info(Q),
+    io:format("~ts~n~n", [Q]),
     log_queries(Queries).
 
 timestamp(Timestamp) ->
