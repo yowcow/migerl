@@ -1,9 +1,14 @@
 MYSQL := mysql:5.7
+POSTGRES := postgres:11
 
 all:
-	docker pull $(MYSQL)
+	$(MAKE) -f docker.mk -j 2 pull-$(MYSQL) pull-$(POSTGRES)
 
-start: mysql.cid
+pull-%:
+	docker pull $*
+
+start:
+	$(MAKE) -f docker.mk -j 2 mysql.cid postgres.cid
 
 mysql.cid:
 	docker run --rm -d \
@@ -14,8 +19,19 @@ mysql.cid:
 		-p 3306:3306 \
 		$(MYSQL)
 
+postgres.cid:
+	docker run --rm -d \
+		--cidfile $@ \
+		--name migerl-postgres \
+		-e POSTGRES_PASSWORD=mypassword \
+		-p 5432:5432 \
+		$(POSTGRES)
+
 stop:
-	[ -f mysql.cid ] && docker stop $$(cat mysql.cid) || true
-	rm -f mysql.cid
+	$(MAKE) -f docker.mk -j 2 stop-mysql.cid stop-postgres.cid
+
+stop-%:
+	[ -f $* ] && docker stop $$(cat $*) || true
+	rm -f $*
 
 .PHONY: all start stop
