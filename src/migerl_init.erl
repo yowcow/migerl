@@ -19,6 +19,13 @@ create_query(mysql) ->
            "`applied_at` datetime DEFAULT NULL, "
            "PRIMARY KEY (`id`) "
            ") ENGINE=InnoDB DEFAULT CHARSET=utf8",
+    {Query, []};
+create_query(postgres) ->
+    Query = "CREATE TABLE IF NOT EXISTS migrations ("
+            "id TEXT NOT NULL, "
+            "applied_at TIMESTAMP DEFAULT NULL, "
+            "PRIMARY KEY (id) "
+            ")",
     {Query, []}.
 
 create_dir(Dir) ->
