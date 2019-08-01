@@ -44,12 +44,12 @@ dispatch_postgres_test_() ->
         [
             fun() ->
                 ok = migerl_init:dispatch(Conn, [{dir, "/tmp/migerl-hoge"}]),
-                {ok, _, [{Count}]} = migerl_db:query(Conn, "SELECT count(*) FROM migrations", []),
+                {ok, _, [[Count]]} = migerl_db:query(Conn, "SELECT count(*) FROM migrations", []),
                 ?assertEqual(0, Count)
             end,
             fun() ->
                 ok = migerl_init:dispatch(Conn, [{dir, "/tmp/migerl-hoge"}]),
-                {ok, _, [{Count}]} = migerl_db:query(Conn, "SELECT count(*) FROM migrations", []),
+                {ok, _, [[Count]]} = migerl_db:query(Conn, "SELECT count(*) FROM migrations", []),
                 ?assertEqual(0, Count)
             end,
             fun() ->
