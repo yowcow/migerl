@@ -6,10 +6,12 @@
     query/3,
     queries/2,
     tx_queries/2,
+
     create_table/1,
     get_applied_at/2,
     is_applied/2,
     get_status/2,
+
     apply_query/2,
     unapply_query/2
 ]).

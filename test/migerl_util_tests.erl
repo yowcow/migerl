@@ -20,11 +20,11 @@ list_dir_test_() ->
     Cases = [
         {
             "returns a sorted list of files",
-            "test/files",
+            "test/mysql-files",
             [
-                {"file1.sql", "test/files/file1.sql"},
-                {"file2.sql", "test/files/file2.sql"},
-                {"file3.sql", "test/files/file3.sql"}
+                {"file1.sql", "test/mysql-files/file1.sql"},
+                {"file2.sql", "test/mysql-files/file2.sql"},
+                {"file3.sql", "test/mysql-files/file3.sql"}
             ]
         }
     ],

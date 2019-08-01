@@ -3,20 +3,20 @@
 -include_lib("eunit/include/eunit.hrl").
 
 setup() ->
-    Config = migerl_config:load("default", "test/test.config"),
+    Config = migerl_config:load("mysql", "test/test.config"),
     Conn = migerl_db:start(Config),
     ok = migerl_db:query(Conn, "DROP TABLE IF EXISTS member_password", []),
     ok = migerl_db:query(Conn, "DROP TABLE IF EXISTS member", []),
     ok = migerl_db:query(Conn, "DROP TABLE IF EXISTS migrations", []),
-    ok = migerl_init:dispatch(Conn, [{dir, "test/files"}]),
-    ok = migerl_up:dispatch(Conn, [{dir, "test/files"}, {all, true}]),
+    ok = migerl_init:dispatch(Conn, [{dir, "test/mysql-files"}]),
+    ok = migerl_up:dispatch(Conn, [{dir, "test/mysql-files"}, {all, true}]),
     Conn.
 
 cleanup(Conn) ->
     migerl_db:stop(Conn).
 
 dispatch_test_() ->
-    Opts = [{dir, "test/files"}, {all, false}],
+    Opts = [{dir, "test/mysql-files"}, {all, false}],
     {setup, fun setup/0, fun cleanup/1, fun(Conn) ->
         [
             {
