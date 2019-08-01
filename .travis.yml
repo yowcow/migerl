@@ -5,6 +5,7 @@ jobs:
         - '22.0'
       services:
         - mysql
+        - postgresql
       before_script:
         - make create-db
       script:
