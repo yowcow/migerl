@@ -17,6 +17,25 @@ timestamp_test_() ->
     end,
     lists:map(F, Cases).
 
+datetime_test_() ->
+    Cases = [
+        {
+            "from mysql timestamp",
+            {{2019, 8, 3}, {13, 5, 59}},
+            "2019-08-03 13:05:59"
+        },
+        {
+            "from postgres timestamp",
+            {{2019, 8, 3}, {13, 5, 59.987654321}},
+            "2019-08-03 13:05:59"
+        }
+    ],
+    F = fun({Name, Input, Expected}) ->
+        Actual = migerl_util:datetime(Input),
+        {Name, ?_assertEqual(Expected, Actual)}
+    end,
+    lists:map(F, Cases).
+
 list_dir_test_() ->
     Cases = [
         {

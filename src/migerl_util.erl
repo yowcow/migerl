@@ -36,6 +36,8 @@ timestamp(Timestamp) ->
 posix_second({MegaSec, Sec, _}) ->
     MegaSec * 1000000 + Sec.
 
+datetime({Date, {H, M, S}}) when is_float(S) ->
+    datetime({Date, {H, M, trunc(S)}});
 datetime({{Y, Mo, D}, {H, M, S}}) ->
     io_lib:format("~4.10.0B-~2.10.0B-~2.10.0B ~2.10.0B:~2.10.0B:~2.10.0B", [Y, Mo, D, H, M, S]).
 
@@ -77,7 +79,7 @@ read_queries([Row | L], Acc) ->
         {match, _} ->
             read_queries([], Acc);
         _ ->
-            read_queries(L, [Row++" " | Acc])
+            read_queries(L, [Row++"\n" | Acc])
     end.
 
 -define(TX_STATEMENTS, ["INSERT", "UPDATE", "DELETE", "SELECT"]).
