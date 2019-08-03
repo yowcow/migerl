@@ -54,6 +54,8 @@ dispatch_postgres_test_() ->
             {
                 "unapply 1",
                 fun() ->
+                    {ok, _, Res1} = migerl_db:query(Conn, "select table_schema, table_name from information_schema.tables", []),
+                    erlang:display(Res1),
                     ok = migerl_down:dispatch(Conn, Opts),
                     {ok, _, [[Count]]} = migerl_db:query(Conn, "SELECT count(*) FROM member", []),
                     ?assertEqual(0, Count)
