@@ -13,6 +13,13 @@ What it does
 * Runs a migration with multiple queries under a transaction whenever possible
 
 
+Database Coverage
+-----------------
+
+* MySQL
+* PostgreSQL
+
+
 How to install
 --------------
 
@@ -77,36 +84,52 @@ Should be in erlang proplist:
 [
   {"default", [
     {dialect, mysql},
-    {host, "127.0.0.1"},
-    {port, 3306},
-    {user, "test-migration-user"},
-    {password, "test-user-p@ssw0rd"},
-    {database, "test_db"},
-    {queries, [
-      "SET NAMES utf8mb4"
+    {config, [
+      {host, "127.0.0.1"},
+      {port, 3306},
+      {user, "test-migration-user"},
+      {password, "test-user-p@ssw0rd"},
+      {database, "test_db"},
+      {queries, [
+        "SET NAMES utf8mb4"
+      ]}
     ]}
   ]},
   {"devel", [
     {dialect, mysql},
-    {host, "devel-db-host"},
-    {port, 3306},
-    {user, "devel-migration-user"},
-    {password, "devel-user-p@ssw0rd"},
-    {database, "devel_db"},
-    {queries, [
-      "SET NAMES utf8mb4"
+    {config, [
+      {host, "devel-db-host"},
+      {port, 3306},
+      {user, "devel-migration-user"},
+      {password, "devel-user-p@ssw0rd"},
+      {database, "devel_db"},
+      {queries, [
+        "SET NAMES utf8mb4"
+      ]}
     ]}
   ]},
   {"prod", [
     {dialect, mysql},
-    {host, "prod-db-host"},
-    {port, 3306},
-    {user, "prod-migration-user"},
-    {password, "devel-user-p@ssw0rd"},
-    {database, "prod_db"},
-    {queries, [
-      "SET NAMES utf8mb4"
+    {config, [
+      {host, "prod-db-host"},
+      {port, 3306},
+      {user, "prod-migration-user"},
+      {password, "devel-user-p@ssw0rd"},
+      {database, "prod_db"},
+      {queries, [
+        "SET NAMES utf8mb4"
+      ]}
     ]}
+  ]},
+  {"postgresql", [
+    {dialect, postgres},
+    {config, #{
+      host => "localhost",
+      username => "postgres",
+      password => "",
+      database => "migerl_test",
+      port => 5432
+    }}
   ]}
 ].
 ```
@@ -118,7 +141,4 @@ Build
     rebar3 escriptize
 
 
-Limitations
------------
-
-* Only MySQL is supported at the moment
+See `Makefile`, `docker.mk` for development.

@@ -18,6 +18,7 @@ _build
 rebar3.crashdump
 *~
 
+/rebar3
 *.cid
 *_lexer.erl
 *_parser.erl
