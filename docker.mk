@@ -1,5 +1,5 @@
 MYSQL := mysql:5.7
-POSTGRES := postgres:9.6
+POSTGRES := postgres:11
 
 all: pull
 
