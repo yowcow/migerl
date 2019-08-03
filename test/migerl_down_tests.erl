@@ -50,6 +50,7 @@ dispatch_mysql_test_() ->
 dispatch_postgres_test_() ->
     Opts = [{dir, ?POSTGRES_SCRIPT_DIR}, {all, false}],
     {setup, fun setup_postgres/0, fun cleanup/1, fun(Conn) ->
+        ok = timer:sleep(5 * 1000),
         [
             {
                 "unapply 1",
