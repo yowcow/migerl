@@ -18,15 +18,12 @@ start_stop_test_() ->
     ].
 
 setup_mysql() ->
-    Config = migerl_config:load("mysql", ?CONFIG),
-    Conn = migerl_db:start(Config),
-    ok = migerl_db:query(Conn, "DROP TABLE IF EXISTS migrations", []),
-    ok = migerl_db:query(Conn, "DROP TABLE IF EXISTS example_table", []),
-    ok = migerl_init:dispatch(Conn, [{dir, "/tmp/migerl-hoge"}]),
-    Conn.
+    setup(migerl_config:load("mysql", ?CONFIG)).
 
 setup_postgres() ->
-    Config = migerl_config:load("pg", ?CONFIG),
+    setup(migerl_config:load("pg", ?CONFIG)).
+
+setup(Config) ->
     Conn = migerl_db:start(Config),
     _ = migerl_db:query(Conn, "DROP TABLE IF EXISTS migrations", []),
     _ = migerl_db:query(Conn, "DROP TABLE IF EXISTS example_table", []),

@@ -4,15 +4,14 @@
 -include("testing.hrl").
 
 setup_mysql() ->
-    Config = migerl_config:load("mysql", ?CONFIG),
-    Conn = migerl_db:start(Config),
-    ok = migerl_db:query(Conn, "DROP TABLE IF EXISTS migrations", []),
-    Conn.
+    setup(migerl_config:load("mysql", ?CONFIG)).
 
 setup_postgres() ->
-    Config = migerl_config:load("pg", ?CONFIG),
+    setup(migerl_config:load("pg", ?CONFIG)).
+
+setup(Config) ->
     Conn = migerl_db:start(Config),
-    {ok, [], []} = migerl_db:query(Conn, "DROP TABLE IF EXISTS migrations", []),
+    _ = migerl_db:query(Conn, "DROP TABLE IF EXISTS migrations", []),
     Conn.
 
 cleanup(Conn) ->
