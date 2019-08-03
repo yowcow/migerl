@@ -1,7 +1,12 @@
-REBAR := rebar3
+REBAR_VERSION := 3.11.1
+REBAR := ./rebar3
 
-all:
-	rebar3 escriptize
+all: $(REBAR)
+	$(REBAR) escriptize
+
+$(REBAR):
+	curl -L https://github.com/erlang/rebar3/releases/download/$(REBAR_VERSION)/rebar3 -o $@
+	chmod 0755 $@
 
 create-db: create-mysql create-postgres
 
@@ -25,9 +30,9 @@ create-postgres:
 	psql -c "create database migerl_test;" -U postgres -h 127.0.0.1 -p 5432
 
 test:
-	rebar3 eunit
+	$(REBAR) eunit -s migerl_down
 
 clean:
-	rm -rf _build
+	rm -rf _build $(REBAR)
 
 .PHONY: all create-mysql test clean
