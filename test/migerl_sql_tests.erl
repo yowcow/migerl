@@ -22,6 +22,7 @@ parse_test_() ->
         },
         {
             "'--' style comments are removed",
+            "--select 0 \n"
             "select 1, -- this is one 	 \n "
             "  	2      -- this is two 	 \r\n "
             ";  	-- select 3 -- this is three	 \n "

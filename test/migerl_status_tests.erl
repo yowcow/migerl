@@ -4,22 +4,27 @@
 -include("testing.hrl").
 
 setup_mysql() ->
-    setup(migerl_config:load("mysql", ?CONFIG)).
+    Conn = setup(migerl_config:load("mysql", ?CONFIG)),
+    ok = migerl_init:dispatch(Conn, [{dir, ?MYSQL_SCRIPT_DIR}]),
+    Conn.
+
+setup_postgres() ->
+    Conn = setup(migerl_config:load("pg", ?CONFIG)),
+    ok = migerl_init:dispatch(Conn, [{dir, ?POSTGRES_SCRIPT_DIR}]),
+    Conn.
 
 setup(Config) ->
     Conn = migerl_db:start(Config),
-    ok = migerl_db:query(Conn, "DROP TABLE IF EXISTS member_password", []),
-    ok = migerl_db:query(Conn, "DROP TABLE IF EXISTS member", []),
-    ok = migerl_db:query(Conn, "DROP TABLE IF EXISTS migrations", []),
-    ok = migerl_init:dispatch(Conn, [{dir, ?CONFIG}]),
+    _ = migerl_db:query(Conn, "DROP TABLE IF EXISTS member_password", []),
+    _ = migerl_db:query(Conn, "DROP TABLE IF EXISTS member", []),
+    _ = migerl_db:query(Conn, "DROP TABLE IF EXISTS migrations", []),
     Conn.
 
 cleanup(Conn) ->
     migerl_db:stop(Conn).
 
-dispatch_test_() ->
+dispatch_mysql_test_() ->
     Opts = [{dir, ?MYSQL_SCRIPT_DIR}],
-    %% TODO do effective testing
     {setup, fun setup_mysql/0, fun cleanup/1, fun(Conn) ->
         [
             {
@@ -29,10 +34,30 @@ dispatch_test_() ->
                 end
             },
             {
-                "unapply all",
+                "apply all",
                 fun() ->
-                    ok = migerl_down:dispatch(Conn, [{all, true} | Opts]),
-                    {ok, _, []} = migerl_db:query(Conn, "SHOW TABLES LIKE '%member%'", [])
+                    ok = migerl_up:dispatch(Conn, [{all, true} | Opts]),
+                    ok = migerl_status:dispatch(Conn, Opts)
+                end
+            }
+        ]
+    end}.
+
+dispatch_postgres_test_() ->
+    Opts = [{dir, ?POSTGRES_SCRIPT_DIR}],
+    {setup, fun setup_postgres/0, fun cleanup/1, fun(Conn) ->
+        [
+            {
+                "nothing applied",
+                fun() ->
+                    ok = migerl_status:dispatch(Conn, Opts)
+                end
+            },
+            {
+                "apply all",
+                fun() ->
+                    ok = migerl_up:dispatch(Conn, [{all, true} | Opts]),
+                    ok = migerl_status:dispatch(Conn, Opts)
                 end
             }
         ]
