@@ -6,7 +6,7 @@
 
 -include("config.hrl").
 
--define(VERSION, [0, 1, 1]).
+-define(VERSION, [0, 2, 0]).
 
 %% escript Entry point
 main(Args) ->
