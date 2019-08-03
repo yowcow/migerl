@@ -4,16 +4,15 @@ jobs:
       otp_release:
         - '22.0'
       services:
-        - mysql
         - docker
       before_script:
-        - make -f docker.mk pull-postgres postgres.cid
+        - make -f docker.mk all start
         - make create-db
       script:
         - make all
         - make test
       after_script:
-        - make -f docker.mk stop-postgres
+        - make -f docker.mk stop
       deploy:
         provider: releases
         api_key:
@@ -27,13 +26,12 @@ jobs:
       otp_release:
         - '21.3'
       services:
-        - mysql
         - docker
       before_script:
-        - make -f docker.mk pull-postgres postgres.cid
+        - make -f docker.mk all start
         - make create-db
       script:
         - make all
         - make test
       after_script:
-        - make -f docker.mk stop-postgres
+        - make -f docker.mk stop
