@@ -5,12 +5,15 @@ jobs:
         - '22.0'
       services:
         - mysql
-        - postgresql
+        - docker
       before_script:
+        - make -f docker.mk pull-postgres postgres.cid
         - make create-db
       script:
         - make all
         - make test
+      after_script:
+        - make -f docker.mk stop-postgres
       deploy:
         provider: releases
         api_key:
@@ -25,9 +28,12 @@ jobs:
         - '21.3'
       services:
         - mysql
-        - postgresql
+        - docker
       before_script:
+        - make -f docker.mk pull-postgres postgres.cid
         - make create-db
       script:
         - make all
         - make test
+      after_script:
+        - make -f docker.mk stop-postgres

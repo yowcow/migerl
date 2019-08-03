@@ -1,11 +1,16 @@
 MYSQL := mysql:5.7
-POSTGRES := postgres:11
+POSTGRES := postgres:9.6
 
-all:
-	$(MAKE) -f docker.mk -j 2 pull-$(MYSQL) pull-$(POSTGRES)
+all: pull
 
-pull-%:
-	docker pull $*
+pull:
+	$(MAKE) -f docker.mk -j 2 pull-mysql pull-postgres
+
+pull-mysql:
+	docker pull $(MYSQL)
+
+pull-postgres:
+	docker pull $(POSTGRES)
 
 start:
 	$(MAKE) -f docker.mk -j 2 mysql.cid postgres.cid
@@ -28,10 +33,10 @@ postgres.cid:
 		$(POSTGRES)
 
 stop:
-	$(MAKE) -f docker.mk -j 2 stop-mysql.cid stop-postgres.cid
+	$(MAKE) -f docker.mk -j 2 stop-mysql stop-postgres
 
 stop-%:
-	[ -f $* ] && docker stop $$(cat $*) || true
-	rm -f $*
+	[ -f $*.cid ] && docker stop $$(cat $*.cid) || true
+	rm -f $*.cid
 
-.PHONY: all start stop
+.PHONY: all pull pull-* start stop stop-*
