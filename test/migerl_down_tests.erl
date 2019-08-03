@@ -11,8 +11,12 @@ setup_mysql() ->
 
 setup_postgres() ->
     Conn = setup(migerl_config:load("pg", ?CONFIG)),
+                    {ok, _, Res1} = migerl_db:query(Conn, "select table_schema, table_name from information_schema.tables order by table_schema", []),
+                    erlang:display({res1, Res1}),
     ok = migerl_init:dispatch(Conn, [{dir, ?POSTGRES_SCRIPT_DIR}]),
     ok = migerl_up:dispatch(Conn, [{dir, ?POSTGRES_SCRIPT_DIR}, {all, true}]),
+                    {ok, _, Res2} = migerl_db:query(Conn, "select table_schema, table_name from information_schema.tables order by table_schema", []),
+                    erlang:display({res2, Res2}),
     Conn.
 
 setup(Config) ->
@@ -55,8 +59,8 @@ dispatch_postgres_test_() ->
             {
                 "unapply 1",
                 fun() ->
-                    {ok, _, Res1} = migerl_db:query(Conn, "select table_schema, table_name from information_schema.tables", []),
-                    erlang:display(Res1),
+                    {ok, _, Res3} = migerl_db:query(Conn, "select table_schema, table_name from information_schema.tables order by table_schema", []),
+                    erlang:display({res3, Res3}),
                     ok = migerl_down:dispatch(Conn, Opts),
                     {ok, _, [[Count]]} = migerl_db:query(Conn, "SELECT count(*) FROM member", []),
                     ?assertEqual(0, Count)
