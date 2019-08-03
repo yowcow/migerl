@@ -1,22 +1,23 @@
 -module(migerl_down_tests).
 
 -include_lib("eunit/include/eunit.hrl").
+-include("testing.hrl").
 
 setup() ->
-    Config = migerl_config:load("mysql", "test/test.config"),
+    Config = migerl_config:load("mysql", ?CONFIG),
     Conn = migerl_db:start(Config),
     ok = migerl_db:query(Conn, "DROP TABLE IF EXISTS member_password", []),
     ok = migerl_db:query(Conn, "DROP TABLE IF EXISTS member", []),
     ok = migerl_db:query(Conn, "DROP TABLE IF EXISTS migrations", []),
-    ok = migerl_init:dispatch(Conn, [{dir, "test/mysql-files"}]),
-    ok = migerl_up:dispatch(Conn, [{dir, "test/mysql-files"}, {all, true}]),
+    ok = migerl_init:dispatch(Conn, [{dir, ?MYSQL_SCRIPT_DIR}]),
+    ok = migerl_up:dispatch(Conn, [{dir, ?MYSQL_SCRIPT_DIR}, {all, true}]),
     Conn.
 
 cleanup(Conn) ->
     migerl_db:stop(Conn).
 
 dispatch_test_() ->
-    Opts = [{dir, "test/mysql-files"}, {all, false}],
+    Opts = [{dir, ?MYSQL_SCRIPT_DIR}, {all, false}],
     {setup, fun setup/0, fun cleanup/1, fun(Conn) ->
         [
             {

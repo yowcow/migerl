@@ -1,23 +1,24 @@
 -module(migerl_db_tests).
 
 -include_lib("eunit/include/eunit.hrl").
+-include("testing.hrl").
 
 start_stop_test_() ->
     [
         fun() ->
-            Config = migerl_config:load("mysql", "test/test.config"),
+            Config = migerl_config:load("mysql", ?CONFIG),
             {mysql, _} = Conn = migerl_db:start(Config),
             ok = migerl_db:stop(Conn)
         end,
         fun() ->
-            Config = migerl_config:load("pg", "test/test.config"),
+            Config = migerl_config:load("pg", ?CONFIG),
             {postgres, _} = Conn = migerl_db:start(Config),
             ok = migerl_db:stop(Conn)
         end
     ].
 
 setup_mysql() ->
-    Config = migerl_config:load("mysql", "test/test.config"),
+    Config = migerl_config:load("mysql", ?CONFIG),
     Conn = migerl_db:start(Config),
     ok = migerl_db:query(Conn, "DROP TABLE IF EXISTS migrations", []),
     ok = migerl_db:query(Conn, "DROP TABLE IF EXISTS example_table", []),
@@ -25,7 +26,7 @@ setup_mysql() ->
     Conn.
 
 setup_postgres() ->
-    Config = migerl_config:load("pg", "test/test.config"),
+    Config = migerl_config:load("pg", ?CONFIG),
     Conn = migerl_db:start(Config),
     _ = migerl_db:query(Conn, "DROP TABLE IF EXISTS migrations", []),
     _ = migerl_db:query(Conn, "DROP TABLE IF EXISTS example_table", []),
@@ -175,12 +176,12 @@ get_status_mysql_test_() ->
             {
                 "all unapplied",
                 fun() ->
-                    Files = migerl_util:list_dir("test/mysql-files"),
+                    Files = migerl_util:list_dir(?MYSQL_SCRIPT_DIR),
                     Actual = migerl_db:get_status(Conn, Files),
                     Expected = [
-                        {"file1.sql", "test/mysql-files/file1.sql", will_be_applied},
-                        {"file2.sql", "test/mysql-files/file2.sql", will_be_applied},
-                        {"file3.sql", "test/mysql-files/file3.sql", will_be_applied}
+                        {"file1.sql", ?MYSQL_SCRIPT_DIR++"/file1.sql", will_be_applied},
+                        {"file2.sql", ?MYSQL_SCRIPT_DIR++"/file2.sql", will_be_applied},
+                        {"file3.sql", ?MYSQL_SCRIPT_DIR++"/file3.sql", will_be_applied}
                     ],
                     ?assertEqual(Expected, Actual)
                 end
@@ -190,12 +191,12 @@ get_status_mysql_test_() ->
                 fun() ->
                     {Query, Args} = migerl_db:apply_query(Conn, "file2.sql"),
                     ok = migerl_db:query(Conn, Query, Args),
-                    Files = migerl_util:list_dir("test/mysql-files"),
+                    Files = migerl_util:list_dir(?MYSQL_SCRIPT_DIR),
                     Actual = migerl_db:get_status(Conn, Files),
                     ?assertMatch([
-                        {"file1.sql", "test/mysql-files/file1.sql", wont_be_applied},
-                        {"file2.sql", "test/mysql-files/file2.sql", {_, _}},
-                        {"file3.sql", "test/mysql-files/file3.sql", will_be_applied}
+                        {"file1.sql", ?MYSQL_SCRIPT_DIR++"/file1.sql", wont_be_applied},
+                        {"file2.sql", ?MYSQL_SCRIPT_DIR++"/file2.sql", {_, _}},
+                        {"file3.sql", ?MYSQL_SCRIPT_DIR++"/file3.sql", will_be_applied}
                     ], Actual)
                 end
             }
@@ -208,12 +209,12 @@ get_status_postgres_test_() ->
             {
                 "all unapplied",
                 fun() ->
-                    Files = migerl_util:list_dir("test/mysql-files"),
+                    Files = migerl_util:list_dir(?MYSQL_SCRIPT_DIR),
                     Actual = migerl_db:get_status(Conn, Files),
                     Expected = [
-                        {"file1.sql", "test/mysql-files/file1.sql", will_be_applied},
-                        {"file2.sql", "test/mysql-files/file2.sql", will_be_applied},
-                        {"file3.sql", "test/mysql-files/file3.sql", will_be_applied}
+                        {"file1.sql", ?MYSQL_SCRIPT_DIR++"/file1.sql", will_be_applied},
+                        {"file2.sql", ?MYSQL_SCRIPT_DIR++"/file2.sql", will_be_applied},
+                        {"file3.sql", ?MYSQL_SCRIPT_DIR++"/file3.sql", will_be_applied}
                     ],
                     ?assertEqual(Expected, Actual)
                 end
@@ -223,12 +224,12 @@ get_status_postgres_test_() ->
                 fun() ->
                     {Query, Args} = migerl_db:apply_query(Conn, "file2.sql"),
                     {ok, 1} = migerl_db:query(Conn, Query, Args),
-                    Files = migerl_util:list_dir("test/mysql-files"),
+                    Files = migerl_util:list_dir(?MYSQL_SCRIPT_DIR),
                     Actual = migerl_db:get_status(Conn, Files),
                     ?assertMatch([
-                        {"file1.sql", "test/mysql-files/file1.sql", wont_be_applied},
-                        {"file2.sql", "test/mysql-files/file2.sql", {_, _}},
-                        {"file3.sql", "test/mysql-files/file3.sql", will_be_applied}
+                        {"file1.sql", ?MYSQL_SCRIPT_DIR++"/file1.sql", wont_be_applied},
+                        {"file2.sql", ?MYSQL_SCRIPT_DIR++"/file2.sql", {_, _}},
+                        {"file3.sql", ?MYSQL_SCRIPT_DIR++"/file3.sql", will_be_applied}
                     ], Actual)
                 end
             }

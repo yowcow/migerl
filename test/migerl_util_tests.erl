@@ -1,6 +1,7 @@
 -module(migerl_util_tests).
 
 -include_lib("eunit/include/eunit.hrl").
+-include("testing.hrl").
 
 timestamp_test_() ->
     Cases = [
@@ -20,11 +21,11 @@ list_dir_test_() ->
     Cases = [
         {
             "returns a sorted list of files",
-            "test/mysql-files",
+            ?MYSQL_SCRIPT_DIR,
             [
-                {"file1.sql", "test/mysql-files/file1.sql"},
-                {"file2.sql", "test/mysql-files/file2.sql"},
-                {"file3.sql", "test/mysql-files/file3.sql"}
+                {"file1.sql", ?MYSQL_SCRIPT_DIR++"/file1.sql"},
+                {"file2.sql", ?MYSQL_SCRIPT_DIR++"/file2.sql"},
+                {"file3.sql", ?MYSQL_SCRIPT_DIR++"/file3.sql"}
             ]
         }
     ],

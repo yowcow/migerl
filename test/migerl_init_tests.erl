@@ -1,15 +1,16 @@
 -module(migerl_init_tests).
 
 -include_lib("eunit/include/eunit.hrl").
+-include("testing.hrl").
 
 setup_mysql() ->
-    Config = migerl_config:load("mysql", "test/test.config"),
+    Config = migerl_config:load("mysql", ?CONFIG),
     Conn = migerl_db:start(Config),
     ok = migerl_db:query(Conn, "DROP TABLE IF EXISTS migrations", []),
     Conn.
 
 setup_postgres() ->
-    Config = migerl_config:load("pg", "test/test.config"),
+    Config = migerl_config:load("pg", ?CONFIG),
     Conn = migerl_db:start(Config),
     {ok, [], []} = migerl_db:query(Conn, "DROP TABLE IF EXISTS migrations", []),
     Conn.
