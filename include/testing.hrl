@@ -1,3 +1,3 @@
--define(CONFIG, "_data/test.config").
--define(MYSQL_SCRIPT_DIR, "_data/mysql").
--define(POSTGRES_SCRIPT_DIR, "_data/postgres").
+-define(CONFIG, "data/test.config").
+-define(MYSQL_SCRIPT_DIR, "data/mysql").
+-define(POSTGRES_SCRIPT_DIR, "data/postgres").
