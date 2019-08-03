@@ -8,6 +8,7 @@ dispatch(Conn, Opts) ->
     Dir = proplists:get_value(dir, Opts),
     Files = migerl_util:list_dir(Dir),
     Migrations = migerl_db:get_status(Conn, Files),
+    erlang:display(Migrations),
     All = proplists:get_value(all, Opts),
     apply_migrations(Conn, Migrations, All).
 
