@@ -12,14 +12,16 @@ load_test_() ->
             ],
             [
                 {dialect, mysql},
-                {host, "127.0.0.1"},
-                {port, 3306},
-                {user, "root"},
-                {password, "migerl"},
-                {database, "migerl_test"},
-                {log_warnings, false},
-                {queries, [
-                    "SET NAMES utf8"
+                {config, [
+                    {host, "127.0.0.1"},
+                    {port, 3306},
+                    {user, "root"},
+                    {password, "migerl"},
+                    {database, "migerl_test"},
+                    {log_warnings, false},
+                    {queries, [
+                        "SET NAMES utf8"
+                    ]}
                 ]}
             ]
         },
@@ -31,14 +33,16 @@ load_test_() ->
             ],
             [
                 {dialect, mysql},
-                {host, "127.0.0.1"},
-                {port, 3306},
-                {user, "devel-user"},
-                {password, "migerl"},
-                {database, "migerl_devel"},
-                {log_warnings, false},
-                {queries, [
-                    "SET NAMES utf8"
+                {config, [
+                    {host, "127.0.0.1"},
+                    {port, 3306},
+                    {user, "devel-user"},
+                    {password, "migerl"},
+                    {database, "migerl_devel"},
+                    {log_warnings, false},
+                    {queries, [
+                        "SET NAMES utf8"
+                    ]}
                 ]}
             ]
         }

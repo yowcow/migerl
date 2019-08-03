@@ -1,0 +1,3 @@
+-define(CONFIG, "data/test.config").
+-define(MYSQL_SCRIPT_DIR, "data/mysql").
+-define(POSTGRES_SCRIPT_DIR, "data/postgres").
