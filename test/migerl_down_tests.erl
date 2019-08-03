@@ -55,7 +55,7 @@ dispatch_postgres_test_() ->
                 "unapply 1",
                 fun() ->
                     ok = migerl_down:dispatch(Conn, Opts),
-                    {ok, _, [[Count]]} = migerl_db:query(Conn, "SELECT count(*) FROM \"member\"", []),
+                    {ok, _, [[Count]]} = migerl_db:query(Conn, "SELECT count(*) FROM member", []),
                     ?assertEqual(0, Count)
                 end
             },

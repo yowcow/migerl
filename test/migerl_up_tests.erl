@@ -54,7 +54,7 @@ dispatch_postgres_test_() ->
                 "apply 1",
                 fun() ->
                     ok = migerl_up:dispatch(Conn, Opts),
-                    {ok, _, [[Count]]} = migerl_db:query(Conn, "SELECT count(*) FROM \"member\"", []),
+                    {ok, _, [[Count]]} = migerl_db:query(Conn, "SELECT count(*) FROM member", []),
                     ?assertEqual(0, Count)
                 end
             },
@@ -62,7 +62,7 @@ dispatch_postgres_test_() ->
                 "apply all",
                 fun() ->
                     ok = migerl_up:dispatch(Conn, [{all, true} | Opts]),
-                    {ok, _, [[Count]]} = migerl_db:query(Conn, "SELECT count(*) FROM \"member_password\"", []),
+                    {ok, _, [[Count]]} = migerl_db:query(Conn, "SELECT count(*) FROM member_password", []),
                     ?assertEqual(3, Count)
                 end
             }
