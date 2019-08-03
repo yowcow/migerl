@@ -30,7 +30,7 @@ create-postgres:
 	psql -c "create database migerl_test;" -U postgres -h 127.0.0.1 -p 5432
 
 test:
-	$(REBAR) eunit -s migerl_down
+	$(REBAR) eunit -s migerl_up
 
 clean:
 	rm -rf _build $(REBAR)
