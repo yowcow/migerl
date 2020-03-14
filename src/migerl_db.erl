@@ -1,20 +1,20 @@
 -module(migerl_db).
 
 -export([
-    start/1,
-    stop/1,
-    query/3,
-    queries/2,
-    tx_queries/2,
+         start/1,
+         stop/1,
+         query/3,
+         queries/2,
+         tx_queries/2,
 
-    create_table/1,
-    get_applied_at/2,
-    is_applied/2,
-    get_status/2,
+         create_table/1,
+         get_applied_at/2,
+         is_applied/2,
+         get_status/2,
 
-    apply_query/2,
-    unapply_query/2
-]).
+         apply_query/2,
+         unapply_query/2
+        ]).
 
 start(Data) ->
     start(proplists:get_value(dialect, Data), proplists:get_value(config, Data)).
@@ -42,23 +42,23 @@ stop({postgres, Pid}) ->
 query({mysql, Pid}, Query, Args) ->
     Ret = mysql:query(Pid, Query, Args),
     Result = case Ret of
-        ok         -> ok;
-        {ok, _}    -> Ret;
-        {ok, _, _} -> Ret;
-        Err ->
-            migerl_util:log_error("mysql query failed", Err)
-    end,
+                 ok         -> ok;
+                 {ok, _}    -> Ret;
+                 {ok, _, _} -> Ret;
+                 Err ->
+                     migerl_util:log_error("mysql query failed", Err)
+             end,
     Result;
 query({postgres, Pid}, Query, Args) ->
     Ret = epgsql:equery(Pid, Query, Args),
     Result = case Ret of
-        ok -> ok;
-        {ok, _} -> Ret;
-        {ok, Cols, Rows} ->
-            {ok, Cols, [tuple_to_list(Row) || Row <- Rows]};
-        Err ->
-            migerl_util:log_error("postgres query failed", Err)
-    end,
+                 ok -> ok;
+                 {ok, _} -> Ret;
+                 {ok, Cols, Rows} ->
+                     {ok, Cols, [tuple_to_list(Row) || Row <- Rows]};
+                 Err ->
+                     migerl_util:log_error("postgres query failed", Err)
+             end,
     Result.
 
 queries(_, []) -> ok;
@@ -123,59 +123,59 @@ get_status(Conn, [{Name, Path} | Rem], ToBeApplied, Acc) ->
 
 create_table_query({mysql, _}) ->
     {
-        "CREATE TABLE IF NOT EXISTS `migrations` ("
-        "`id` varchar(254) NOT NULL, "
-        "`applied_at` datetime DEFAULT NULL, "
-        "PRIMARY KEY (`id`) "
-        ") ENGINE=InnoDB DEFAULT CHARSET=utf8",
-        []
+     "CREATE TABLE IF NOT EXISTS `migrations` ("
+     "`id` varchar(254) NOT NULL, "
+     "`applied_at` datetime DEFAULT NULL, "
+     "PRIMARY KEY (`id`) "
+     ") ENGINE=InnoDB DEFAULT CHARSET=utf8",
+     []
     };
 create_table_query({postgres, _}) ->
     {
-        "CREATE TABLE IF NOT EXISTS migrations ("
-        "id TEXT NOT NULL, "
-        "applied_at TIMESTAMP DEFAULT NULL, "
-        "PRIMARY KEY (id) "
-        ")",
-        []
+     "CREATE TABLE IF NOT EXISTS migrations ("
+     "id TEXT NOT NULL, "
+     "applied_at TIMESTAMP DEFAULT NULL, "
+     "PRIMARY KEY (id) "
+     ")",
+     []
     }.
 
 get_applied_at_query({mysql, _}, Name) ->
     {
-        "SELECT applied_at FROM migrations "
-        "WHERE id = ? AND applied_at IS NOT NULL",
-        [Name]
+     "SELECT applied_at FROM migrations "
+     "WHERE id = ? AND applied_at IS NOT NULL",
+     [Name]
     };
 get_applied_at_query({postgres, _}, Name) ->
     {
-        "SELECT applied_at FROM migrations "
-        "WHERE id = $1 AND applied_at IS NOT NULL",
-        [Name]
+     "SELECT applied_at FROM migrations "
+     "WHERE id = $1 AND applied_at IS NOT NULL",
+     [Name]
     }.
 
 apply_query({mysql, _}, Name) ->
     {
-        "INSERT INTO migrations "
-        "SET id = ?, applied_at = NOW() "
-        "ON DUPLICATE KEY UPDATE applied_at = NOW() ",
-        [Name]
+     "INSERT INTO migrations "
+     "SET id = ?, applied_at = NOW() "
+     "ON DUPLICATE KEY UPDATE applied_at = NOW() ",
+     [Name]
     };
 apply_query({postgres, _}, Name) ->
     {
-        "INSERT INTO migrations (id, applied_at) VALUES ($1, NOW()) "
-        "ON CONFLICT (id) DO UPDATE SET applied_at = NOW() ",
-        [Name]
+     "INSERT INTO migrations (id, applied_at) VALUES ($1, NOW()) "
+     "ON CONFLICT (id) DO UPDATE SET applied_at = NOW() ",
+     [Name]
     }.
 
 unapply_query({mysql, _}, Name) ->
     {
-        "DELETE FROM migrations "
-        "WHERE id = ?",
-        [Name]
+     "DELETE FROM migrations "
+     "WHERE id = ?",
+     [Name]
     };
 unapply_query({postgres, _}, Name) ->
     {
-        "DELETE FROM migrations "
-        "WHERE id = $1",
-        [Name]
+     "DELETE FROM migrations "
+     "WHERE id = $1",
+     [Name]
     }.

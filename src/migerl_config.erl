@@ -1,9 +1,9 @@
 -module(migerl_config).
 
 -export([
-    load/1,
-    load/2
-]).
+         load/1,
+         load/2
+        ]).
 
 load(Opts) ->
     Env = proplists:get_value(env, Opts),

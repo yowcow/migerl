@@ -1,8 +1,8 @@
 -module(migerl_status).
 
 -export([
-    dispatch/2
-]).
+         dispatch/2
+        ]).
 
 -include("config.hrl").
 

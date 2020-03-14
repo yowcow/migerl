@@ -1,8 +1,8 @@
 -module(migerl).
 
 -export([
-    main/1
-]).
+         main/1
+        ]).
 
 -include("config.hrl").
 
@@ -16,9 +16,9 @@ main(Args) ->
     if
         Help ->
             getopt:usage(
-                ?OPT_SPEC, "migerl", "[command ...]",
-                [{"command", "Commands to execute (e.g. init, new, status, up, down)"}]
-            );
+              ?OPT_SPEC, "migerl", "[command ...]",
+              [{"command", "Commands to execute (e.g. init, new, status, up, down)"}]
+             );
         Ver ->
             io:format("migerl ~.10B.~.10B.~.10B~n", ?VERSION);
         true ->
