@@ -1,15 +1,15 @@
 -module(migerl_new).
 
 -export([
-    dispatch/2,
-    filepath/3
-]).
+         dispatch/2,
+         filepath/3
+        ]).
 
 dispatch(_, Opts) ->
     create_script(
-        proplists:get_value(dir, Opts),
-        proplists:get_value(title, Opts)
-    ).
+      proplists:get_value(dir, Opts),
+      proplists:get_value(title, Opts)
+     ).
 
 create_script(Dir, Title) ->
     File = filepath(Dir, Title, os:timestamp()),

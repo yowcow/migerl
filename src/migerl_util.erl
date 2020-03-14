@@ -1,17 +1,17 @@
 -module(migerl_util).
 
 -export([
-    log_error/2,
-    log_info/1,
-    log_info/2,
-    log_queries/1,
-    timestamp/1,
-    datetime/1,
-    list_dir/1,
-    read_file/1,
-    read_up/1,
-    read_down/1
-]).
+         log_error/2,
+         log_info/1,
+         log_info/2,
+         log_queries/1,
+         timestamp/1,
+         datetime/1,
+         list_dir/1,
+         read_file/1,
+         read_up/1,
+         read_down/1
+        ]).
 
 log_error(Msg, Args) ->
     io:format("~n~ts: ~p~n~n", [Msg, Args]),

@@ -1,8 +1,8 @@
 -module(migerl_sql).
 
 -export([
-    parse/1
-]).
+         parse/1
+        ]).
 
 -spec parse(list()) -> list(list()).
 parse(SQL) ->
@@ -24,11 +24,11 @@ build_queries([Tok], Cur, Acc) ->
 build_queries([Tok, Next|T], Cur, Acc) ->
     BeforeBreak = lists:member(Next, [",", "(", ")", ";"]),
     Tok1 = if
-        Tok =:= "(" -> Tok;
-        Tok =:= "," -> Tok++" ";
-        BeforeBreak -> Tok;
-        true        -> Tok++" "
-    end,
+               Tok =:= "(" -> Tok;
+               Tok =:= "," -> Tok++" ";
+               BeforeBreak -> Tok;
+               true        -> Tok++" "
+           end,
     build_queries([Next|T], [Tok1|Cur], Acc).
 
 build_query(Words) ->

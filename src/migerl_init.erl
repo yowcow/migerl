@@ -1,8 +1,8 @@
 -module(migerl_init).
 
 -export([
-    dispatch/2
-]).
+         dispatch/2
+        ]).
 
 dispatch(Conn, Opts) ->
     create_table(Conn),

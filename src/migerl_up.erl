@@ -1,8 +1,8 @@
 -module(migerl_up).
 
 -export([
-    dispatch/2
-]).
+         dispatch/2
+        ]).
 
 dispatch(Conn, Opts) ->
     Dir = proplists:get_value(dir, Opts),
