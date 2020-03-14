@@ -6,8 +6,7 @@ jobs:
       services:
         - docker
       before_script:
-        - make -f docker.mk all start
-        - make create-db
+        - make -f docker.mk all start create-db
       script:
         - make all
         - make test
@@ -19,8 +18,7 @@ jobs:
       services:
         - docker
       before_script:
-        - make -f docker.mk all start
-        - make create-db
+        - make -f docker.mk all start create-db
       script:
         - make all
         - make test
@@ -32,8 +30,7 @@ jobs:
       services:
         - docker
       before_script:
-        - make -f docker.mk all start
-        - make create-db
+        - make -f docker.mk all start create-db
       script:
         - make all
         - make test
