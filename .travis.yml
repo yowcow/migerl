@@ -2,18 +2,6 @@ jobs:
   include:
     - language: erlang
       otp_release:
-        - '20.3'
-      services:
-        - docker
-      before_script:
-        - make -f docker.mk all start create-db
-      script:
-        - make all
-        - make test
-      after_script:
-        - make -f docker.mk stop
-    - language: erlang
-      otp_release:
         - '21.3'
       services:
         - docker
