@@ -2,7 +2,9 @@ jobs:
   include:
     - language: erlang
       otp_release:
-        - '22.0'
+        - '20'
+        - '21'
+        - '22'
       services:
         - docker
       before_script:
