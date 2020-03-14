@@ -2,6 +2,32 @@ jobs:
   include:
     - language: erlang
       otp_release:
+        - '20.3'
+      services:
+        - docker
+      before_script:
+        - make -f docker.mk all start
+        - make create-db
+      script:
+        - make all
+        - make test
+      after_script:
+        - make -f docker.mk stop
+    - language: erlang
+      otp_release:
+        - '21.3'
+      services:
+        - docker
+      before_script:
+        - make -f docker.mk all start
+        - make create-db
+      script:
+        - make all
+        - make test
+      after_script:
+        - make -f docker.mk stop
+    - language: erlang
+      otp_release:
         - '22.2'
       services:
         - docker
@@ -22,18 +48,3 @@ jobs:
         on:
           tags: true
           repo: yowcow/migerl
-    - language: erlang
-      otp_release:
-        - '20'
-        - '21'
-        - '22'
-      services:
-        - docker
-      before_script:
-        - make -f docker.mk all start
-        - make create-db
-      script:
-        - make all
-        - make test
-      after_script:
-        - make -f docker.mk stop
