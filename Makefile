@@ -1,4 +1,4 @@
-REBAR_VERSION := 3.11.1
+REBAR_VERSION := 3.13.1
 REBAR := ./rebar3
 
 all: $(REBAR)
