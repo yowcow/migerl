@@ -30,7 +30,7 @@ filepath_test_() ->
     lists:map(F, Cases).
 
 dispatch_test() ->
-    File = migerl_new:dispatch(notused, [{dir, "/tmp"}, {title, "hoge fuga"}]),
+    File = migerl_new:dispatch([{dir, "/tmp"}, {title, "hoge fuga"}]),
     {ok, Bin} = file:read_file(File),
     Actual = binary_to_list(Bin),
     Expected = "-- +migrate Up\n\n-- +migrate Down\n\n",

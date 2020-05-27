@@ -1,12 +1,11 @@
-REBAR_VERSION := 3.13.1
 REBAR := ./rebar3
 
 all: $(REBAR)
 	$(REBAR) escriptize
 
 $(REBAR):
-	curl -L https://github.com/erlang/rebar3/releases/download/$(REBAR_VERSION)/rebar3 -o $@
-	chmod 0755 $@
+	curl -L https://s3.amazonaws.com/rebar3/rebar3 -o $@
+	chmod +x $@
 
 test:
 	$(REBAR) eunit

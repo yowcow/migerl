@@ -1,10 +1,18 @@
 -module(migerl_status).
+-behavior(migerl_dispatcher_behavior).
+-export([dispatch/1]).
 
--export([
-         dispatch/2
-        ]).
+-ifdef(TEST).
+-export([dispatch/2]).
+-endif.
 
 -include("config.hrl").
+
+-spec dispatch([migerl:option()]) -> term().
+dispatch(Opts) ->
+    Config = migerl_config:load(Opts),
+    Conn = migerl_db:start(Config),
+    dispatch(Conn, Opts).
 
 dispatch(Conn, Opts) ->
     Dir = proplists:get_value(dir, Opts),
