@@ -1,12 +1,18 @@
 -module(migerl).
 
--export([
-         main/1
-        ]).
+-export([main/1]).
 
 -include("config.hrl").
 
--define(VERSION, [0, 2, 0]).
+-define(VERSION, [0, 2, 1]).
+
+-type option() :: getopt:option().
+-type command() :: string().
+
+-export_type([
+              option/0,
+              command/0
+             ]).
 
 %% escript Entry point
 main(Args) ->
@@ -22,28 +28,26 @@ main(Args) ->
         Ver ->
             io:format("migerl ~.10B.~.10B.~.10B~n", ?VERSION);
         true ->
-            Config = migerl_config:load(Opts),
-            Conn = migerl_db:start(Config),
-            dispatch(Conn, Opts, Commands)
+            dispatch(Commands, Opts)
     end,
     erlang:halt(0).
 
-dispatch(Conn, _, []) ->
-    migerl_db:stop(Conn),
-    done;
-dispatch(Conn, Opts, [Comm | Rem]) ->
-    case Comm of
+-spec dispatch([option()], [command()]) -> ok.
+dispatch(_, []) ->
+    ok;
+dispatch(Opts, [Command|T]) ->
+    case Command of
         "init" ->
-            migerl_init:dispatch(Conn, Opts);
+            migerl_init:dispatch(Opts);
         "new" ->
-            migerl_new:dispatch(Conn, Opts);
+            migerl_new:dispatch(Opts);
         "up" ->
-            migerl_up:dispatch(Conn, Opts);
+            migerl_up:dispatch(Opts);
         "down" ->
-            migerl_down:dispatch(Conn, Opts);
+            migerl_down:dispatch(Opts);
         "status" ->
-            migerl_status:dispatch(Conn, Opts);
+            migerl_status:dispatch(Opts);
         _ ->
-            migerl_util:log_error("unknown command", Comm)
+            migerl_util:log_error("unknown command", Command)
     end,
-    dispatch(Conn, Opts, Rem).
+    dispatch(Opts, T).

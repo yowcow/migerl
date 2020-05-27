@@ -1,11 +1,13 @@
 -module(migerl_new).
+-behavior(migerl_dispatcher_behavior).
+-export([dispatch/1]).
 
--export([
-         dispatch/2,
-         filepath/3
-        ]).
+-ifdef(TEST).
+-export([filepath/3]).
+-endif.
 
-dispatch(_, Opts) ->
+-spec dispatch([migerl:option()]) -> term().
+dispatch(Opts) ->
     create_script(
       proplists:get_value(dir, Opts),
       proplists:get_value(title, Opts)
