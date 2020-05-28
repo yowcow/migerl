@@ -6,6 +6,8 @@
 -export([filepath/3]).
 -endif.
 
+-include("config.hrl").
+
 -spec dispatch([migerl:option()]) -> term().
 dispatch(Opts) ->
     create_script(
@@ -14,13 +16,26 @@ dispatch(Opts) ->
      ).
 
 create_script(Dir, Title) ->
-    File = filepath(Dir, Title, os:timestamp()),
-    case file:write_file(File, [template()]) of
+    {File, Filepath} = filepath(Dir, Title, os:timestamp()),
+    case file:write_file(Filepath, [template()]) of
         ok -> ok;
         {error, Reason} -> migerl_util:log_error("failed creating a script file", Reason)
     end,
-    migerl_util:log_info("done creating a migration file!: "++File),
-    File.
+    OrderFile = Dir++"/"++?ORDER_FILE,
+    case filelib:is_regular(OrderFile) of
+        true ->
+            %% append created script to the order management file
+            ok = file:write_file(
+                   OrderFile,
+                   io_lib:format("- ~s~n", [File]),
+                   [append]
+                  );
+        _ ->
+            %% no order management file
+            ok
+    end,
+    migerl_util:log_info("done creating a migration file!: "++Filepath),
+    {File, Filepath}.
 
 template() ->
     "-- +migrate Up\n\n"
@@ -29,7 +44,8 @@ template() ->
 filepath(Dir, Title, Timestamp) ->
     Prefix = migerl_util:timestamp(Timestamp),
     SafeTitle = sanitize_title(Title, ["/", " ", "?", "!", "~"]),
-    lists:flatten(io_lib:format("~s/~s-~s.sql", [Dir, Prefix, SafeTitle])).
+    File = lists:flatten(io_lib:format("~s-~s.sql", [Prefix, SafeTitle])),
+    {File, Dir++"/"++File}.
 
 sanitize_title(Title, []) -> Title;
 sanitize_title(Title0, [Pattern | Rem]) ->

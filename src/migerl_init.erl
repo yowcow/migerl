@@ -6,6 +6,8 @@
 -export([dispatch/2]).
 -endif.
 
+-include("config.hrl").
+
 -spec dispatch([migerl:option()]) -> term().
 dispatch(Opts) ->
     Config = migerl_config:load(Opts),
@@ -24,7 +26,7 @@ create_dir(Dir) ->
     case file:make_dir(Dir) of
         ok ->
             %% create execution order file
-            OrderFile = Dir++"/order.yml",
+            OrderFile = Dir++"/"++?ORDER_FILE,
             ok = file:write_file(OrderFile, [template()]),
             ok;
         {error, eexist} -> ok;
