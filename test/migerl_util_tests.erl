@@ -36,23 +36,47 @@ datetime_test_() ->
         end,
     lists:map(F, Cases).
 
-list_dir_test_() ->
-    Cases = [
-             {
-              "returns a sorted list of files",
-              ?MYSQL_SCRIPT_DIR,
-              [
-               {"file1.sql", ?MYSQL_SCRIPT_DIR++"/file1.sql"},
-               {"file2.sql", ?MYSQL_SCRIPT_DIR++"/file2.sql"},
-               {"file3.sql", ?MYSQL_SCRIPT_DIR++"/file3.sql"}
-              ]
-             }
-            ],
-    F = fun({Name, Input, Expected}) ->
-                Actual = migerl_util:list_dir(Input),
-                {Name, ?_assertEqual(Expected, Actual)}
-        end,
-    lists:map(F, Cases).
+list_files_test_() ->
+    {setup,
+     fun() ->
+             {ok, Started} = application:ensure_all_started(migerl),
+             Started
+     end,
+     fun(Apps) ->
+             error_logger:tty(false),
+             try [application:stop(App) || App <- Apps]
+             after error_logger:tty(true)
+             end
+     end,
+     fun(_) ->
+             Cases = [
+                      {
+                       "w/ order file",
+                       ?MYSQL_SCRIPT_DIR,
+                       [
+                        {"file1.sql", ?MYSQL_SCRIPT_DIR++"/file1.sql"},
+                        {"file2.sql", ?MYSQL_SCRIPT_DIR++"/file2.sql"},
+                        {"file4.sql", ?MYSQL_SCRIPT_DIR++"/file4.sql"},
+                        {"file3.sql", ?MYSQL_SCRIPT_DIR++"/file3.sql"}
+                       ]
+                      },
+                      {
+                       "w/ order file",
+                       ?POSTGRES_SCRIPT_DIR,
+                       [
+                        {"file1.sql", ?POSTGRES_SCRIPT_DIR++"/file1.sql"},
+                        {"file2.sql", ?POSTGRES_SCRIPT_DIR++"/file2.sql"},
+                        {"file3.sql", ?POSTGRES_SCRIPT_DIR++"/file3.sql"}
+                       ]
+                      }
+                     ],
+             F = fun({Name, Opts, Expected}) ->
+                         Actual = migerl_util:list_files(Opts),
+                         {Name, ?_assertEqual(Expected, Actual)}
+                 end,
+             lists:map(F, Cases)
+     end
+    }.
 
 read_up_test_() ->
     Cases = [

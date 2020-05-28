@@ -4,25 +4,30 @@
 -include("testing.hrl").
 
 setup_mysql() ->
-    Conn = setup(migerl_config:load("mysql", ?CONFIG)),
+    Ctx = {Conn, _} = setup(migerl_config:load("mysql", ?CONFIG)),
     ok = migerl_init:dispatch(Conn, [{dir, ?MYSQL_SCRIPT_DIR}]),
     ok = migerl_up:dispatch(Conn, [{dir, ?MYSQL_SCRIPT_DIR}, {all, true}]),
-    Conn.
+    Ctx.
 
 setup_postgres() ->
-    Conn = setup(migerl_config:load("pg", ?CONFIG)),
+    Ctx = {Conn, _} = setup(migerl_config:load("pg", ?CONFIG)),
     ok = migerl_init:dispatch(Conn, [{dir, ?POSTGRES_SCRIPT_DIR}]),
     ok = migerl_up:dispatch(Conn, [{dir, ?POSTGRES_SCRIPT_DIR}, {all, true}]),
-    Conn.
+    Ctx.
 
 setup(Config) ->
     Conn = migerl_db:start(Config),
     _ = migerl_db:query(Conn, "DROP TABLE IF EXISTS member_password", []),
     _ = migerl_db:query(Conn, "DROP TABLE IF EXISTS member", []),
     _ = migerl_db:query(Conn, "DROP TABLE IF EXISTS migrations", []),
-    Conn.
+    {ok, Apps} = application:ensure_all_started(migerl),
+    {Conn, Apps}.
 
-cleanup(Conn) ->
+cleanup({Conn, Apps}) ->
+    error_logger:tty(false),
+    try [application:stop(App) || App <- Apps]
+    after error_logger:tty(true)
+    end,
     migerl_db:stop(Conn).
 
 dispatch_mysql_test_() ->
@@ -30,14 +35,14 @@ dispatch_mysql_test_() ->
     {setup,
      fun setup_mysql/0,
      fun cleanup/1,
-     fun(Conn) ->
+     fun({Conn, _}) ->
              [
               {
                "unapply 1",
                fun() ->
                        ok = migerl_down:dispatch(Conn, Opts),
                        {ok, _, [[Count]]} = migerl_db:query(Conn, "SELECT count(*) FROM member", []),
-                       ?assertEqual(0, Count)
+                       ?assertEqual(1, Count)
                end
               },
               {
@@ -56,7 +61,7 @@ dispatch_postgres_test_() ->
     {setup,
      fun setup_postgres/0,
      fun cleanup/1,
-     fun(Conn) ->
+     fun({Conn, _}) ->
              [
               {
                "unapply 1",

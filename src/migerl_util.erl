@@ -7,11 +7,13 @@
          log_queries/1,
          timestamp/1,
          datetime/1,
-         list_dir/1,
+         list_files/1,
          read_file/1,
          read_up/1,
          read_down/1
         ]).
+
+-include("config.hrl").
 
 log_error(Msg, Args) ->
     io:format("~n~ts: ~p~n~n", [Msg, Args]),
@@ -41,13 +43,36 @@ datetime({Date, {H, M, S}}) when is_float(S) ->
 datetime({{Y, Mo, D}, {H, M, S}}) ->
     io_lib:format("~4.10.0B-~2.10.0B-~2.10.0B ~2.10.0B:~2.10.0B:~2.10.0B", [Y, Mo, D, H, M, S]).
 
+list_files(Dir) ->
+    OrderFile = Dir++"/"++?ORDER_FILE,
+    case filelib:is_regular(OrderFile) of
+        true ->
+            list_order(Dir, OrderFile);
+        _ ->
+            list_dir(Dir)
+    end.
+
 list_dir(Dir) ->
     case file:list_dir(Dir) of
         {ok, Files} ->
-            [{File, Dir++"/"++File} || File <- lists:sort(Files)];
+            [
+             {File, Dir++"/"++File}
+             || File <- lists:sort(Files),
+                lists:suffix(".sql", File)
+            ];
         Err ->
             log_error("failed opening directory '"++Dir++"'", Err)
     end.
+
+list_order(Dir, OrderFile) ->
+    [Files] = try yamerl_constr:file(OrderFile)
+              catch
+                  _:Err -> throw({invalid_yaml, Err})
+              end,
+    [
+     {File, Dir++"/"++File}
+     || File <- Files
+    ].
 
 read_file(Filepath) ->
     {ok, Bin} = file:read_file(Filepath),

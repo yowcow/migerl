@@ -16,7 +16,7 @@ dispatch(Opts) ->
 
 dispatch(Conn, Opts) ->
     Dir = proplists:get_value(dir, Opts),
-    Files = migerl_util:list_dir(Dir),
+    Files = migerl_util:list_files(Dir),
     Results = migerl_db:get_status(Conn, Files),
     migerl_util:log_info("----- current migration status -----"),
     show_status(Results).
