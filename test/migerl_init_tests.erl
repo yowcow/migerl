@@ -10,6 +10,8 @@ setup_postgres() ->
     setup(migerl_config:load("pg", ?CONFIG)).
 
 setup(Config) ->
+    file:delete("/tmp/migerl-hoge/order.yml"),
+    file:del_dir("/tmp/migerl-hoge"),
     Conn = migerl_db:start(Config),
     _ = migerl_db:query(Conn, "DROP TABLE IF EXISTS migrations", []),
     Conn.
@@ -26,7 +28,8 @@ dispatch_mysql_test_() ->
               fun() ->
                       ok = migerl_init:dispatch(Conn, [{dir, "/tmp/migerl-hoge"}]),
                       {ok, _, [[Count]]} = migerl_db:query(Conn, "SELECT count(*) FROM migrations", []),
-                      ?assertEqual(0, Count)
+                      ?assertEqual(0, Count),
+                      ?assert(filelib:is_regular("/tmp/migerl-hoge/order.yml"))
               end,
               fun() ->
                       ok = migerl_init:dispatch(Conn, [{dir, "/tmp/migerl-hoge"}]),
@@ -52,7 +55,8 @@ dispatch_postgres_test_() ->
               fun() ->
                       ok = migerl_init:dispatch(Conn, [{dir, "/tmp/migerl-hoge"}]),
                       {ok, _, [[Count]]} = migerl_db:query(Conn, "SELECT count(*) FROM migrations", []),
-                      ?assertEqual(0, Count)
+                      ?assertEqual(0, Count),
+                      ?assert(filelib:is_regular("/tmp/migerl-hoge/order.yml"))
               end,
               fun() ->
                       ok = migerl_init:dispatch(Conn, [{dir, "/tmp/migerl-hoge"}]),

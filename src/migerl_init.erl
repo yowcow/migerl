@@ -22,9 +22,16 @@ create_table(Conn) ->
 
 create_dir(Dir) ->
     case file:make_dir(Dir) of
-        ok -> ok;
+        ok ->
+            %% create execution order file
+            OrderFile = Dir++"/order.yml",
+            ok = file:write_file(OrderFile, [template()]),
+            ok;
         {error, eexist} -> ok;
         {error, Reason} ->
             migerl_util:log_error("failed creating dir "++ Dir, Reason)
     end,
     migerl_util:log_info("done creating directory for migration files!").
+
+template() ->
+    "---\n".
