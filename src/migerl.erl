@@ -14,6 +14,11 @@
               command/0
              ]).
 
+-on_load(on_load/0).
+
+on_load() ->
+    application:start(yamerl).
+
 %% escript Entry point
 main(Args) ->
     {ok, {Opts, Commands}} = getopt:parse(?OPT_SPEC, Args),
@@ -28,7 +33,7 @@ main(Args) ->
         Ver ->
             io:format("migerl ~.10B.~.10B.~.10B~n", ?VERSION);
         true ->
-            dispatch(Commands, Opts)
+            dispatch(Opts, Commands)
     end,
     erlang:halt(0).
 
