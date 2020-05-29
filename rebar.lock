@@ -1,3 +1,4 @@
+{"1.1.0",
 [{<<"color">>,
   {git,"git://github.com/julianduque/erlang-color",
        {ref,"2e538a3360cfdf47906929a04b9471a1f5320afe"}},
@@ -13,4 +14,9 @@
  {<<"mysql">>,
   {git,"git://github.com/mysql-otp/mysql-otp",
        {ref,"9a98eff7a127a5012c45e4b8bd845b0befccf0a9"}},
-  0}].
+  0},
+ {<<"yamerl">>,{pkg,<<"yamerl">>,<<"0.8.0">>},0}]}.
+[
+{pkg_hash,[
+ {<<"yamerl">>, <<"8214CFE16BBABE5D1D6C14A14AEA11C784B9A21903DD6A7C74F8CE180ADAE5C7">>}]}
+].
