@@ -5,15 +5,15 @@
   0},
  {<<"epgsql">>,
   {git,"git://github.com/epgsql/epgsql",
-       {ref,"cd3144d88f476b0425ea42319a3f6a8a22c13edf"}},
+       {ref,"895c8f9d53f08d09ec6a0301c56d3d6f270929f2"}},
   0},
  {<<"getopt">>,
   {git,"git://github.com/jcomellas/getopt",
-       {ref,"784b0ea8777f754fc96099b385d00d9cf5b137d8"}},
+       {ref,"13676822ad5cbb0602e5dfeca937ddf47220f12b"}},
   0},
  {<<"mysql">>,
   {git,"git://github.com/mysql-otp/mysql-otp",
-       {ref,"9a98eff7a127a5012c45e4b8bd845b0befccf0a9"}},
+       {ref,"6840af959ecba1cfc9fbc098c4fa4fc8babc8018"}},
   0},
  {<<"yamerl">>,{pkg,<<"yamerl">>,<<"0.8.0">>},0}]}.
 [
