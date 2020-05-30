@@ -8,7 +8,7 @@ $(REBAR):
 	chmod +x $@
 
 test:
-	$(REBAR) eunit
+	$(REBAR) do xref,eunit
 
 clean:
 	rm -rf _build $(REBAR)
