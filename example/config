@@ -1,0 +1,16 @@
+[
+ {"test", [
+           {dialect, mysql},
+           {config, [
+                     {host, "127.0.0.1"},
+                     {port, 3306},
+                     {user, "root"},
+                     {password, ""},
+                     {database, "mytest_db"},
+                     {log_warnings, true},
+                     {queries, [
+                                "SET NAMES utf8"
+                               ]}
+                    ]}
+          ]}
+].
