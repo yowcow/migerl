@@ -1,0 +1,6 @@
+---
+- 20200530075258-ref_1_create_member_table.sql
+- 20200530075653-ref_2_add_members.sql
+- 20200530080009-ref_3_add_uniq_index_member.email.sql
+- 20200530080602-ref_5_create_table_member_passwd.sql
+- 20200530080553-ref_4_insert_member_passwd.sql
