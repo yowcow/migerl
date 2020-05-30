@@ -4,7 +4,7 @@
 
 -include("config.hrl").
 
--define(VERSION, [0, 2, 2]).
+-define(VERSION, [0, 3, 0]).
 
 -type option() :: getopt:option().
 -type command() :: string().
