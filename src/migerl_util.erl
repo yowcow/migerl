@@ -47,7 +47,7 @@ list_files(Dir) ->
     OrderFile = Dir++"/"++?ORDER_FILE,
     case filelib:is_regular(OrderFile) of
         true ->
-            list_order(Dir, OrderFile);
+            list_order(Dir, yamerl_constr:file(OrderFile));
         _ ->
             list_dir(Dir)
     end.
@@ -64,11 +64,13 @@ list_dir(Dir) ->
             log_error("failed opening directory '"++Dir++"'", Err)
     end.
 
-list_order(Dir, OrderFile) ->
-    [Files] = try yamerl_constr:file(OrderFile)
-              catch
-                  _:Err -> throw({invalid_yaml, Err})
-              end,
+list_order(Dir, Order) ->
+    Files = case Order of
+                [L] when is_list(L) ->
+                    L;
+                _ ->
+                    []
+            end,
     [
      {File, Dir++"/"++File}
      || File <- Files
@@ -85,12 +87,12 @@ read_down(Data) ->
     find_queries("Down", string:split(Data, "\n", all)).
 
 find_queries(_, []) -> undefined;
-find_queries(Mark, [Line | Rem]) ->
+find_queries(Mark, [Line | T]) ->
     case re:run(Line, "^-- \\+migrate "++ Mark) of
         {match, _} ->
-            read_queries(Rem, []);
+            read_queries(T, []);
         _ ->
-            find_queries(Mark, Rem)
+            find_queries(Mark, T)
     end.
 
 read_queries([], []) -> undefined;
