@@ -40,7 +40,12 @@ stop({postgres, Pid}) ->
     epgsql:close(Pid).
 
 query({mysql, Pid}, Query, Args) ->
-    Ret = mysql:query(Pid, Query, Args),
+    Ret = case Args of
+              [] ->
+                  mysql:query(Pid, Query);
+              _ ->
+                  mysql:query(Pid, Query, Args)
+          end,
     Result = case Ret of
                  ok         -> ok;
                  {ok, _}    -> Ret;
