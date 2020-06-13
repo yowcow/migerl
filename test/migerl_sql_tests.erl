@@ -21,13 +21,36 @@ parse_test_() ->
               ["SELECT 1", "select 2, \";\""]
              },
              {
+              "'#' style comments are removed",
+              "# hoge\n"
+              "#	hoge\n"
+              "select 1; #fuga\n",
+              [
+               "select 1"
+              ]
+             },
+             {
               "'--' style comments are removed",
-              "--select 0 \n"
-              "select 1, -- this is one 	 \n "
-              "  	2      -- this is two 	 \r\n "
+              "--select 0\n;"
+              "select 1--1, -- this is one 	 \n "
+              "  	1+2      -- this is two 	 \r\n "
               ";  	-- select 3 -- this is three	 \n "
-              ";  	--select 4 -- this is four\n ",
-              ["select 1, 2"]
+              ";  	--	select 4 -- this is four\n ",
+              [
+               "- - select 0",
+               "select 1 - -1, 1 +2"
+              ]
+             },
+             {
+              "/* */ style comments are removed",
+              "select 1 /* hoge \n"
+              "fuga \n*/"
+              "; select 2 /* \n"
+              "select 3",
+              [
+               "select 1",
+               "select 2"
+              ]
              },
              {
               "with backquotes",
@@ -64,11 +87,7 @@ parse_test_() ->
              }
             ],
     F = fun({Name, Input, Expected}) ->
-                {Name,
-                 fun() ->
-                         Actual = migerl_sql:parse(Input),
-                         ?assertEqual(Expected, Actual)
-                 end
-                }
+                Actual = migerl_sql:parse(Input),
+                {Name, ?_assertEqual(Expected, Actual)}
         end,
     lists:map(F, Cases).

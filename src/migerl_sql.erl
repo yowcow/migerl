@@ -19,10 +19,12 @@ build_queries([";"|T], Cur, Acc) ->
         [] -> build_queries(T, [], Acc);
         _  -> build_queries(T, [], [build_query(Cur) | Acc])
     end;
+build_queries([begin_comment|T], Cur, Acc) ->
+    build_queries(skip_until(end_comment, T), Cur, Acc);
 build_queries([Tok], Cur, Acc) ->
     build_queries([], [Tok|Cur], Acc);
 build_queries([Tok, Next|T], Cur, Acc) ->
-    BeforeBreak = lists:member(Next, [",", "(", ")", ";"]),
+    BeforeBreak = lists:member(Next, [",", "(", ")", ";", begin_comment]),
     Tok1 = if
                Tok =:= "(" -> Tok;
                Tok =:= "," -> Tok++" ";
@@ -33,3 +35,7 @@ build_queries([Tok, Next|T], Cur, Acc) ->
 
 build_query(Words) ->
     lists:flatten(lists:reverse(Words)).
+
+skip_until(_, []) -> [];
+skip_until(Expr, [Expr|T]) -> T;
+skip_until(Expr, [_|T]) -> skip_until(Expr, T).

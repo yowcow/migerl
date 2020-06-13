@@ -3,9 +3,13 @@ Definitions.
 DQSTR = "(\\.|[^\"\\]*)"
 SQSTR = '(\\.|[^\'\\]*)'
 BQSTR = \`(\\.|[^\`\\]*)\`
+NUMBER = [\+\-\*\/]?[0-9]*(\.[0-9]+((e|E)[0-9]+)?)?
 
-COMMENTBLOCK = \-\-[^\n]*\n
-WHITESPACE   = [\s\t\n\r]+
+HASHCOMMENT = #[^\n]*\n
+DASHCOMMENT = \-\-[\s\t]+[^\n]*\n
+OCOMM = \/\*
+CCOMM = \*\/
+WHITESPACE   = [\s\t\n\r]
 
 COMMA     = ,
 SEMICOLON = ;
@@ -20,10 +24,9 @@ PLS  = \+
 MNS  = \-
 DIV  = \/
 MUL  = \*
+EXC  = \!
 OPAR = \(
 CPAR = \)
-OCOM = \/\*
-CCOM = \*\/
 WORD = [^\s\t\n\r,;\!\-\=\<\>\+\-\/\*\(\)]+
 
 Rules.
@@ -31,9 +34,13 @@ Rules.
 {DQSTR} : {token, TokenChars}.
 {SQSTR} : {token, TokenChars}.
 {BQSTR} : {token, TokenChars}.
+{NUMBER} : {token, TokenChars}.
 
-{COMMENTBLOCK} : skip_token.
-{WHITESPACE}   : skip_token.
+{HASHCOMMENT} : skip_token.
+{DASHCOMMENT} : skip_token.
+{OCOMM} : {token, begin_comment}.
+{CCOMM} : {token, end_comment}.
+{WHITESPACE}+ : skip_token.
 
 {COMMA}     : {token, TokenChars}.
 {SEMICOLON} : {token, TokenChars}.
@@ -48,10 +55,9 @@ Rules.
 {MNS}  : {token, TokenChars}.
 {DIV}  : {token, TokenChars}.
 {MUL}  : {token, TokenChars}.
+{EXC}+ : {token, TokenChars}.
 {OPAR} : {token, TokenChars}.
 {CPAR} : {token, TokenChars}.
-{OCOM} : {token, TokenChars}.
-{CCOM} : {token, TokenChars}.
 {WORD} : {token, TokenChars}.
 
 Erlang code.
