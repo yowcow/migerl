@@ -6,7 +6,8 @@ BQSTR = \`(\\.|[^\`\\]*)\`
 NUMBER = [\+\-\*\/]?[0-9]*(\.[0-9]+((e|E)[0-9]+)?)?
 
 HASHCOMMENT = #[^\n]*\n
-DASHCOMMENT = \-\-([\s\t]+[^\n]*)?\n
+DASHCOMMENT1 = \-\-([\s\t]+[^\n]*)?\n
+DASHCOMMENT2 = \-\-\/\/[^\n]*\n
 MYSQL_OCOMM = \/\*\![0-9]+
 OCOMM = \/\*
 CCOMM = \*\/
@@ -37,12 +38,13 @@ Rules.
 {BQSTR} : {token, TokenChars}.
 {NUMBER} : {token, TokenChars}.
 
-{HASHCOMMENT} : skip_token.
-{DASHCOMMENT} : skip_token.
-{MYSQL_OCOMM} : {token, begin_mysql_comment}.
-{OCOMM}       : {token, begin_comment}.
-{CCOMM}       : {token, end_comment}.
-{WHITESPACE}+ : skip_token.
+{HASHCOMMENT}  : skip_token.
+{DASHCOMMENT1} : skip_token.
+{DASHCOMMENT2} : skip_token.
+{MYSQL_OCOMM}  : {token, begin_mysql_comment}.
+{OCOMM}        : {token, begin_comment}.
+{CCOMM}        : {token, end_comment}.
+{WHITESPACE}+  : skip_token.
 
 {COMMA}     : {token, TokenChars}.
 {SEMICOLON} : {token, TokenChars}.

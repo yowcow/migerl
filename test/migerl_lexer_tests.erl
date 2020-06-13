@@ -33,6 +33,7 @@ string_test_() ->
               "--\n"
               "-- hoge hoge\n"
               "--	fuga fuga\n"
+              "--// hogehoge\n"
               "--\n"
               "hoge1 fuga1--1\n"
               "hoge2 fuga2 -- bar\n"
