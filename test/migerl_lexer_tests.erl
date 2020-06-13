@@ -46,8 +46,8 @@ string_test_() ->
               "mysqldump comment",
               "/*!40101 SET NAMES utf8 */;",
               [
-               begin_comment,
-               "!", "40101", "SET", "NAMES", "utf8",
+               begin_mysql_comment,
+               "SET", "NAMES", "utf8",
                end_comment,
                ";"
               ]
@@ -81,8 +81,8 @@ string_test_() ->
               "  where name=\"--foo--\" "
               ") subq\n",
               [
-               begin_comment,
-               "!", "40101", "SET", "NAMES", "utf8", "hogehoge",
+               begin_mysql_comment,
+               "SET", "NAMES", "utf8", "hogehoge",
                end_comment, ";",
                "select", "`hoge`", "as", "`HOGE`", "-", "-", "this", "aint", "a", "comment",
                "from", "(",

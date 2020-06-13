@@ -7,6 +7,7 @@ NUMBER = [\+\-\*\/]?[0-9]*(\.[0-9]+((e|E)[0-9]+)?)?
 
 HASHCOMMENT = #[^\n]*\n
 DASHCOMMENT = \-\-([\s\t]+[^\n]*)?\n
+MYSQL_OCOMM = \/\*\![0-9]+
 OCOMM = \/\*
 CCOMM = \*\/
 WHITESPACE   = [\s\t\n\r]
@@ -38,8 +39,9 @@ Rules.
 
 {HASHCOMMENT} : skip_token.
 {DASHCOMMENT} : skip_token.
-{OCOMM} : {token, begin_comment}.
-{CCOMM} : {token, end_comment}.
+{MYSQL_OCOMM} : {token, begin_mysql_comment}.
+{OCOMM}       : {token, begin_comment}.
+{CCOMM}       : {token, end_comment}.
 {WHITESPACE}+ : skip_token.
 
 {COMMA}     : {token, TokenChars}.

@@ -97,6 +97,8 @@ parse_test_() ->
               "UNLOCK TABLES;\n",
               [
                "LOCK TABLES `fugafuga` WRITE",
+               "ALTER TABLE `fugafuga` DISABLE KEYS",
+               "ALTER TABLE `fugafuga` ENABLE KEYS",
                "UNLOCK TABLES"
               ]
              }
