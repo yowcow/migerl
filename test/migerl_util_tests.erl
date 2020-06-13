@@ -94,12 +94,6 @@ read_up_test_() ->
               undefined
              },
              {
-              "no query when no up or down section is defined",
-              "hogehoge\n"
-              "fugafuga\n",
-              undefined
-             },
-             {
               "returns 1 up query",
               "\n"
               "-- +migrate Up\n"
@@ -140,7 +134,7 @@ read_up_test_() ->
               {notx, ["hoge1 hoge2 fuga1 fuga2"]}
              },
              {
-              "returns 1 up query when down section is defined before up section",
+              "no up query when down section is defined before up section",
               "\n"
               "-- +migrate Down\n"
               "foo1\n"
@@ -152,7 +146,7 @@ read_up_test_() ->
               "hoge2\n"
               "fuga1\n"
               "fuga2\n",
-              {notx, ["hoge1 hoge2 fuga1 fuga2"]}
+              undefined
              },
              {
               "returns transactionable queries",
@@ -167,6 +161,26 @@ read_up_test_() ->
                     "delete hoge",
                     "select * from hoge"
                    ]}
+             },
+             {
+              "everything is up query when no up or down section is defined",
+              "hoge hoge; fuga fuga;",
+              {notx, [
+                      "hoge hoge",
+                      "fuga fuga"
+                     ]}
+             },
+             {
+              "everything before //@UNDO is up query",
+              "hoge hoge;\n"
+              "fuga fuga;\n"
+              "--//@UNDO"
+              "foo foo;\n"
+              "bar bar;\n",
+              {notx, [
+                      "hoge hoge",
+                      "fuga fuga"
+                     ]}
              }
             ],
     F = fun({Name, Input, Expected}) ->
@@ -188,12 +202,6 @@ read_down_test_() ->
               "-- +migrate Up\n"
               "\n\n"
               "-- +migrate Down\n",
-              undefined
-             },
-             {
-              "no query when no up or down section is defined",
-              "hogehoge\n"
-              "fugafuga\n",
               undefined
              },
              {
@@ -253,6 +261,24 @@ read_down_test_() ->
                     "delete hoge",
                     "select * from hoge"
                    ]}
+             },
+             {
+              "no down query when no up or down section is defined",
+              "hoge hoge; fuga fuga;",
+              undefined
+             },
+             {
+              "everything after //@UNDO is down query",
+              "hoge hoge;\n"
+              "fuga fuga;\n"
+              "--//@UNDO\n"
+              "-- SQL to undo the change goes here.\n"
+              "foo foo;\n"
+              "bar bar;\n",
+              {notx, [
+                      "foo foo",
+                      "bar bar"
+                     ]}
              }
             ],
     F = fun({Name, Input, Expected}) ->

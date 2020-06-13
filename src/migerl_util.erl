@@ -80,33 +80,52 @@ read_file(Filepath) ->
     {ok, Bin} = file:read_file(Filepath),
     binary_to_list(Bin).
 
+%% queries can be divided in either formats
+-define(DOWN_QUERY_SEP, [
+                         "^-- \\+migrate Down",
+                         "^--\/\/@UNDO"
+                        ]).
+-define(UP_QUERY_SEP, [
+                       "^-- \\+migrate Up"
+                      ]).
+
 read_up(Data) ->
-    find_queries("Up", string:split(Data, "\n", all)).
+    read_up_to(?DOWN_QUERY_SEP, string:split(Data, "\n", all)).
 
 read_down(Data) ->
-    find_queries("Down", string:split(Data, "\n", all)).
+    read_down2(string:split(Data, "\n", all)).
 
-find_queries(_, []) -> undefined;
-find_queries(Mark, [Line | T]) ->
-    case re:run(Line, "^-- \\+migrate "++ Mark) of
-        {match, _} ->
-            read_queries(T, []);
+read_down2([]) ->
+    undefined;
+read_down2([Row|T]) ->
+    case re_match_any(?DOWN_QUERY_SEP, Row) of
+        true ->
+            read_up_to(?UP_QUERY_SEP, T);
         _ ->
-            find_queries(Mark, T)
+            read_down2(T)
     end.
 
-read_queries([], []) -> undefined;
-read_queries([], Acc) ->
+read_up_to(Sep, Input) ->
+    read_up_to(Sep, Input, []).
+
+read_up_to(_, [], Acc) ->
     SQL = lists:flatten(lists:reverse(Acc)),
     parse_queries(migerl_sql:parse(SQL));
-read_queries([[] | L], Acc) ->
-    read_queries(L, Acc);
-read_queries([Row | L], Acc) ->
-    case re:run(Row, "^-- \\+migrate .+") of
-        {match, _} ->
-            read_queries([], Acc);
+read_up_to(Sep, [Row|T], Acc) ->
+    case re_match_any(Sep, Row) of
+        true ->
+            read_up_to(Sep, [], Acc);
         _ ->
-            read_queries(L, [Row++"\n" | Acc])
+            read_up_to(Sep, T, [Row++"\n"|Acc])
+    end.
+
+re_match_any([], _) -> false;
+re_match_any([Pattern|T], Expr) ->
+    case re:run(Expr, Pattern) of
+        {match, _} ->
+            true;
+        _ ->
+            re_match_any(T, Expr)
     end.
 
 -define(TX_STATEMENTS, ["INSERT", "UPDATE", "DELETE", "SELECT"]).
@@ -114,6 +133,8 @@ read_queries([Row | L], Acc) ->
 parse_queries(Queries) ->
     parse_queries(Queries, Queries, true).
 
+parse_queries([], [], _) ->
+    undefined;
 parse_queries([], Queries, true) ->
     {tx, Queries};
 parse_queries([], Queries, false) ->
