@@ -16,6 +16,7 @@ WHITESPACE   = [\s\t\n\r]
 COMMA     = ,
 SEMICOLON = ;
 EQ   = \=
+BEQ  = \:\=
 NEQ1 = \!\=
 NEQ2 = \<\>
 GT   = \>
@@ -29,7 +30,7 @@ MUL  = \*
 EXC  = \!
 OPAR = \(
 CPAR = \)
-WORD = [^\s\t\n\r,;\!\-\=\<\>\+\-\/\*\(\)]+
+WORD = [^\s\t\n\r,;:\!\-\=\<\>\+\-\/\*\(\)]+
 
 Rules.
 
@@ -48,13 +49,14 @@ Rules.
 
 {COMMA}     : {token, TokenChars}.
 {SEMICOLON} : {token, TokenChars}.
-{EQ}   : {token, TokenChars}.
 {NEQ1} : {token, TokenChars}.
 {NEQ2} : {token, TokenChars}.
 {GT}   : {token, TokenChars}.
 {GEQ}  : {token, TokenChars}.
 {LT}   : {token, TokenChars}.
 {LEQ}  : {token, TokenChars}.
+{BEQ}  : {token, TokenChars}.
+{EQ}   : {token, TokenChars}.
 {PLS}  : {token, TokenChars}.
 {MNS}  : {token, TokenChars}.
 {DIV}  : {token, TokenChars}.
