@@ -94,12 +94,21 @@ parse_test_() ->
               "LOCK TABLES `fugafuga` WRITE;\n"
               "/*!40000 ALTER TABLE `fugafuga` DISABLE KEYS */;\n"
               "/*!40000 ALTER TABLE `fugafuga` ENABLE KEYS */;\n"
-              "UNLOCK TABLES;\n",
+              "UNLOCK TABLES;\n"
+              "ENGINE=InnoDB \n"
+              "/*!50100 PARTITION BY RANGE (TO_DAYS(`date`))\n"
+              "(PARTITION p1 VALUES LESS THAN (100) ENGINE = InnoDB,\n"
+              " PARTITION p2 VALUES LESS THAN (200) ENGINE = InnoDB,\n"
+              " PARTITION p3 VALUES LESS THAN (300) ENGINE = InnoDB) */;",
               [
                "LOCK TABLES `fugafuga` WRITE",
                "ALTER TABLE `fugafuga` DISABLE KEYS",
                "ALTER TABLE `fugafuga` ENABLE KEYS",
-               "UNLOCK TABLES"
+               "UNLOCK TABLES",
+               "ENGINE = InnoDB PARTITION BY RANGE(TO_DAYS(`date`))"
+               "(PARTITION p1 VALUES LESS THAN(100) ENGINE = InnoDB, "
+               "PARTITION p2 VALUES LESS THAN(200) ENGINE = InnoDB, "
+               "PARTITION p3 VALUES LESS THAN(300) ENGINE = InnoDB)"
               ]
              }
             ],

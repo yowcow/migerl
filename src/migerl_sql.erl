@@ -18,12 +18,12 @@ build_queries([], Cur, Acc) ->
     build_queries([], [], [lists:reverse(Cur)|Acc]);
 build_queries([";"|T], Cur, Acc) ->
     build_queries(T, [], [lists:reverse(Cur)|Acc]);
-build_queries([begin_comment|T], Cur, Acc) ->
-    {T2, _} = gather_until(end_comment, T, []),
-    build_queries(T2, Cur, Acc);
-build_queries([begin_mysql_comment|T], [], Acc) ->
-    {T2, Cur} = gather_until(end_comment, T, []),
-    build_queries(T2, Cur, Acc);
+build_queries([begin_comment|T0], Cur, Acc) ->
+    {T, _} = gather_until(end_comment, T0, []),
+    build_queries(T, Cur, Acc);
+build_queries([begin_mysql_comment|T0], Cur0, Acc) ->
+    {T, Cur} = gather_until(end_comment, T0, Cur0),
+    build_queries(T, Cur, Acc);
 build_queries([Token|T], Cur, Acc) ->
     build_queries(T, [Token|Cur], Acc).
 
