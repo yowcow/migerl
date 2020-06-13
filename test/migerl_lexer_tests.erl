@@ -30,6 +30,10 @@ string_test_() ->
              },
              {
               "comment block",
+              "--\n"
+              "-- hoge hoge\n"
+              "--	fuga fuga\n"
+              "--\n"
               "hoge1 fuga1--1\n"
               "hoge2 fuga2 -- bar\n"
               "/*this is \na comment*/",

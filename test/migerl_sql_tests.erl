@@ -84,6 +84,21 @@ parse_test_() ->
               [
                "PRIMARY KEY(`id`), UNIQUE KEY `foo_uniq`(`foo`)) ENGINE = InnoDB"
               ]
+             },
+             {
+              "mysqldump",
+              "--\n"
+              "-- Dumping data for table `hogehoge`\n"
+              "--\n"
+              "\n"
+              "LOCK TABLES `fugafuga` WRITE;\n"
+              "/*!40000 ALTER TABLE `fugafuga` DISABLE KEYS */;\n"
+              "/*!40000 ALTER TABLE `fugafuga` ENABLE KEYS */;\n"
+              "UNLOCK TABLES;\n",
+              [
+               "LOCK TABLES `fugafuga` WRITE",
+               "UNLOCK TABLES"
+              ]
              }
             ],
     F = fun({Name, Input, Expected}) ->

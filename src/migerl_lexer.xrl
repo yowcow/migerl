@@ -6,7 +6,7 @@ BQSTR = \`(\\.|[^\`\\]*)\`
 NUMBER = [\+\-\*\/]?[0-9]*(\.[0-9]+((e|E)[0-9]+)?)?
 
 HASHCOMMENT = #[^\n]*\n
-DASHCOMMENT = \-\-[\s\t]+[^\n]*\n
+DASHCOMMENT = \-\-([\s\t]+[^\n]*)?\n
 OCOMM = \/\*
 CCOMM = \*\/
 WHITESPACE   = [\s\t\n\r]
