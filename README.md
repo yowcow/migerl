@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/yowcow/migerl.svg?branch=master)](https://travis-ci.org/yowcow/migerl)
+[![Build Status](https://app.travis-ci.com/yowcow/migerl.svg?branch=master)](https://app.travis-ci.com/yowcow/migerl)
 
 migerl
 ======
