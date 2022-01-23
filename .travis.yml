@@ -26,11 +26,10 @@ jobs:
     - make -f docker.mk stop
     deploy:
       provider: releases
+      api_key:
+        secure: Y2AYH36PQqPwcrLOPSpe9Ovfwm7wW9Yq0Pj2GQFBrVu4pCDh3KRDlCiJkZQ0d94gClC2RuXEddYzOSrsCmj98oDYJ7FTMZ9xf/5zw6wxFAe7ctAUGJDQw+rGt6g4NxirHlIS/Zz5H+771+fo4UKR2/tQHdNKtNcxv6LcDymZmfqoCL5g2mhIqW9eIZiotLqmoZl+h+8VWJ2DBNB4na8QkxPDlXowQvLRSZLAgL7plbMMZNF8qYKAl4hxwiX5hWxkFnxs7t7sQhNU9wXDUUYSiZR8mPvQaONOAjBF28a7AP7wLD2UYyprHO9mrkD/yCdK9E+qcsOyOKCrDErL/KVdGLX8rPOiAtu70rjMR9UBvgXwIJQ6iqPiUnyILP9PdYuGO95xEPe3EF4nDnfy4tVYTbTylzkvcHE6Au2qz2mrN+LTo5eu3ILwBhi4VKuqQ64Maf/8JjDQLfFMoa3R/XX3bbpbmmhs0BsS8gZruvVCseRv/o8j4ylh0HieThPcARrjslCRttwUo5Skd8fwTvcwBoVUoIbOj69sD5gizSRCevAB5x06/dRolva0JM/T+shSauAK9EYbkgI1zIvZncztlL8k9rZtF62bFBNfLGrCNvP7uZbSJgIDuYScFemk5jIsHsjLdqW42HIjZBs011PkfQ1/bStiDj+BG9pA/tdfAZs=
       file: _build/default/bin/migerl
       skip_cleanup: true
       on:
         tags: true
         repo: yowcow/migerl
-env:
-  global:
-    secure: Y2AYH36PQqPwcrLOPSpe9Ovfwm7wW9Yq0Pj2GQFBrVu4pCDh3KRDlCiJkZQ0d94gClC2RuXEddYzOSrsCmj98oDYJ7FTMZ9xf/5zw6wxFAe7ctAUGJDQw+rGt6g4NxirHlIS/Zz5H+771+fo4UKR2/tQHdNKtNcxv6LcDymZmfqoCL5g2mhIqW9eIZiotLqmoZl+h+8VWJ2DBNB4na8QkxPDlXowQvLRSZLAgL7plbMMZNF8qYKAl4hxwiX5hWxkFnxs7t7sQhNU9wXDUUYSiZR8mPvQaONOAjBF28a7AP7wLD2UYyprHO9mrkD/yCdK9E+qcsOyOKCrDErL/KVdGLX8rPOiAtu70rjMR9UBvgXwIJQ6iqPiUnyILP9PdYuGO95xEPe3EF4nDnfy4tVYTbTylzkvcHE6Au2qz2mrN+LTo5eu3ILwBhi4VKuqQ64Maf/8JjDQLfFMoa3R/XX3bbpbmmhs0BsS8gZruvVCseRv/o8j4ylh0HieThPcARrjslCRttwUo5Skd8fwTvcwBoVUoIbOj69sD5gizSRCevAB5x06/dRolva0JM/T+shSauAK9EYbkgI1zIvZncztlL8k9rZtF62bFBNfLGrCNvP7uZbSJgIDuYScFemk5jIsHsjLdqW42HIjZBs011PkfQ1/bStiDj+BG9pA/tdfAZs=
