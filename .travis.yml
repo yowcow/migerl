@@ -1,8 +1,9 @@
 jobs:
   include:
+
     - language: erlang
       otp_release:
-        - '21.3'
+        - '23.3.1'
       services:
         - docker
       before_script:
@@ -12,21 +13,10 @@ jobs:
         - make test
       after_script:
         - make -f docker.mk stop
+
     - language: erlang
       otp_release:
-        - '22.3'
-      services:
-        - docker
-      before_script:
-        - make -f docker.mk all start create-db
-      script:
-        - make all
-        - make test
-      after_script:
-        - make -f docker.mk stop
-    - language: erlang
-      otp_release:
-        - '23.0'
+        - '24.1'
       services:
         - docker
       before_script:
