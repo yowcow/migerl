@@ -132,7 +132,7 @@ create_table_query({mysql, _}) ->
      "`id` varchar(254) NOT NULL, "
      "`applied_at` datetime DEFAULT NULL, "
      "PRIMARY KEY (`id`) "
-     ") ENGINE=InnoDB DEFAULT CHARSET=utf8",
+     ") ENGINE=InnoDB",
      []
     };
 create_table_query({postgres, _}) ->
